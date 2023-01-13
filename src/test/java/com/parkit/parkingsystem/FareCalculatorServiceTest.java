@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class FareCalculatorServiceTest {
@@ -32,8 +33,15 @@ public class FareCalculatorServiceTest {
 
     @Test
     public void calculateFareCar(){
-        Date inTime = new Date();
-        inTime.setTime( System.currentTimeMillis() - (  60 * 60 * 1000) );
+//        Date inTime = new Date();
+//        inTime.setTime( System.currentTimeMillis() - (  60 * 60 * 1000) );
+    	//GIVEN
+    	
+    	
+    	//WHEN
+    	
+    	//THEN
+        LocalDateTime inTime = LocalDateTime.now(;
         Date outTime = new Date();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
 
