@@ -26,9 +26,7 @@ public class InputReaderUtil {
             String vehicleRegNumber= scan.nextLine();
             if(vehicleRegNumber == null || vehicleRegNumber.trim().length()==0) {
                 throw new IllegalArgumentException("Invalid input provided");
-            }
-            // Ici ? Si véhicule déjà entré sans être sorti...
-            
+            }            
             return vehicleRegNumber;
         }catch(Exception e){
             logger.error("Error while reading user input from Shell", e);

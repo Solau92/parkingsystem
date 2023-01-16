@@ -89,6 +89,66 @@ public class TicketDAO {
         }
     }
 
+    // pour ParkingService
+    public boolean isVehicleInParking(String vehicleRegNumber) {
+    	
+    	// Doit retourner true si véhicule déjà dans parking, false sinon
+    	
+        Connection con = null;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.CHECK_CAR_ALREADY_IN_PARKING);           
+            ps.setString(1,vehicleRegNumber);
+            ResultSet rs = ps.executeQuery();
+            
+            if(rs.next()){
+            	if (rs.getInt(1) == 0) {
+            		return false;
+            	} 
+            	return true;
+            }
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
+        }catch (Exception ex){
+            logger.error("Error ----",ex);
+        }finally {
+            dataBaseConfig.closeConnection(con);
+        }
+        // ?? 
+		return true;  		
+    }
+    
+    // pour FareCalculator
+    public boolean isUtilisateurReccurent(String vehicleRegNumber) {
+		// Si déjà venu dans parking, return true, else return false 
+    	// 
+    	
+        Connection con = null;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.CHECK_VEHICULE_DEJA_VENU);           
+            ps.setString(1,vehicleRegNumber);
+            ResultSet rs = ps.executeQuery();
+            
+            if(rs.next()){
+            	if (rs.getInt(1) == 1) {
+            		return false;
+            	} 
+            	return true;
+            }
+            
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
+        }catch (Exception ex){
+            logger.error("Error ----",ex);
+        }finally {
+            dataBaseConfig.closeConnection(con);
+        }
+        // ?? 
+		return false;
+    }
+    	   
+    
     public boolean updateTicket(Ticket ticket) {
         Connection con = null;
         try {
