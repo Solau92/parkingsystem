@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import static org.mockito.Mockito.*;
@@ -33,12 +34,14 @@ public class ParkingServiceTest {
     @BeforeEach
 //    private void setUpPerTest() {
     public void setUpPerTest() {
-        try {
+      
+    	try {
             when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 
             ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
             Ticket ticket = new Ticket();
-            ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
+            LocalDateTime inTime = LocalDateTime.now().minusHours(1);
+            ticket.setInTime(null);            
             ticket.setParkingSpot(parkingSpot);
             ticket.setVehicleRegNumber("ABCDEF");
             when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
@@ -51,6 +54,25 @@ public class ParkingServiceTest {
             e.printStackTrace();
             throw  new RuntimeException("Failed to set up test mock objects");
         }
+    	
+//    	try {
+//            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+//
+//            ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+//            Ticket ticket = new Ticket();
+//            ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
+//            ticket.setParkingSpot(parkingSpot);
+//            ticket.setVehicleRegNumber("ABCDEF");
+//            when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+//            when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+//
+//            when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+//
+//            parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw  new RuntimeException("Failed to set up test mock objects");
+//        }
     }
 
     @Test

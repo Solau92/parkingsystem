@@ -51,6 +51,14 @@ public class ParkingService {
 					ticket.setPrice(0);
 					ticket.setInTime(inTime);
 					ticket.setOutTime(null);
+					
+					if (VehicleAlreadyParkAtLeastOnceInThisParking(vehicleRegNumber) > 0) {
+						System.out.println("Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
+						ticket.setFareRate(0.75);
+					} else {
+						ticket.setFareRate(1.00);
+					}
+					
 					ticketDAO.saveTicket(ticket);
 					System.out.println("Generated Ticket and saved in DB");
 					System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
@@ -64,6 +72,7 @@ public class ParkingService {
 		}
 	}
 
+
 	// getVehicleRegNumber
 	private String getVehicleRegNumber() throws Exception {
 		System.out.println("Please type the vehicle registration number and press enter key");
@@ -71,11 +80,15 @@ public class ParkingService {
 	}
 
 	private boolean vehicleAlreadyInParking(String immat) {
-
 		// Chercher dans la BDD si la requete
 //    	SELECT * FROM ticket WHERE reg = ... AND OUTTIME NULL renvoie qqch 
 		return ticketDAO.isVehicleInParking(immat);
 
+	}
+	
+	private int VehicleAlreadyParkAtLeastOnceInThisParking(String immat) {
+		// TODO Auto-generated method stub
+		return ticketDAO.hasVehicleAlreadyParkAtLeastOnceInThisParking(immat);
 	}
 
 	public ParkingSpot getNextParkingNumberIfAvailable() {
@@ -121,7 +134,6 @@ public class ParkingService {
 			String vehicleRegNumber = getVehicleRegNumber();
 
 			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
-
 //            Date outTime = new Date();
 			LocalDateTime outTime = LocalDateTime.now();
 			ticket.setOutTime(outTime);
@@ -141,10 +153,4 @@ public class ParkingService {
 		}
 	}
 	
-//	private boolean isUtilisateurReccurent() {
-//		
-//		
-//		return false;
-//		
-//	}
 }

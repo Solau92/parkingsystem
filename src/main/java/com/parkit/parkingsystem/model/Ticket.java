@@ -14,6 +14,9 @@ public class Ticket {
 //    modif sur getters et setters 
     private LocalDateTime inTime;
     private LocalDateTime outTime;
+    
+//    ajouté
+    private double fareRate;
 
     public int getId() {
         return id;
@@ -62,4 +65,20 @@ public class Ticket {
     public void setOutTime(LocalDateTime outTime) {
         this.outTime = outTime;
     }
+
+	/**
+	 * @return the fareRate
+	 */
+	public double getFareRate() {
+		return fareRate;
+	}
+
+	/**
+	 * @param fareRate the fareRate to set
+	 */
+	public void setFareRate(double fareRate) {
+		this.fareRate = fareRate;
+	}
+    
+    
 }

@@ -38,12 +38,20 @@ public class TicketDAO {
 
 //            Timestamp tmsb = Timestamp.valueOf(ticket.getOutTime()); //// NullerPointerException
 //            ps.setTimestamp(5, (ticket.getOutTime() == null)? null: (tmsb));  
-                        
-            if (ticket.getOutTime() == null) {
-            	ps.setTimestamp(5, null);
+
+//            Marche mais...
+//            if (ticket.getOutTime() == null) {
+//            	ps.setTimestamp(5, null);
+//            } else {
+//              Timestamp tmsb = Timestamp.valueOf(ticket.getOutTime());
+//              ps.setTimestamp(5, (tmsb));  
+//            }
+ 
+//            Fare_Rate           
+            if (hasVehicleAlreadyParkAtLeastOnceInThisParking(ticket.getVehicleRegNumber()) > 0) {
+            	ps.setDouble(6, 0.95);
             } else {
-              Timestamp tmsb = Timestamp.valueOf(ticket.getOutTime());
-              ps.setTimestamp(5, (tmsb));  
+            	ps.setDouble(6, 1);
             }
             
             return ps.execute();
@@ -55,6 +63,31 @@ public class TicketDAO {
         }
     }
 
+	public int hasVehicleAlreadyParkAtLeastOnceInThisParking(String vehicleRegNumber) {
+    	// Doit retourner le nombre de fois où le véhicule est venu dans le parking
+    	
+		int numberTimesVehicleInThisParking = 0;
+        Connection con = null;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.NUMBER_TIMES_CAR_IN_PARKING);           
+            ps.setString(1,vehicleRegNumber);
+            ResultSet rs = ps.executeQuery();
+            
+            if(rs.next()){
+            	return rs.getInt(1);
+            }
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
+        }catch (Exception ex){
+            logger.error("Error ----",ex);
+        }finally {
+            dataBaseConfig.closeConnection(con);
+        }
+        // ?? 
+		return numberTimesVehicleInThisParking;
+	}
+	
     public Ticket getTicket(String vehicleRegNumber) {
         Connection con = null;
         Ticket ticket = null;
@@ -78,6 +111,8 @@ public class TicketDAO {
                 if (rs.getTimestamp(5) != null) {
                     ticket.setOutTime(rs.getTimestamp(5).toLocalDateTime());
                 }
+                System.out.println("taux : " + rs.getDouble(7));
+                ticket.setFareRate(rs.getDouble(7));
             }
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
@@ -117,36 +152,6 @@ public class TicketDAO {
         // ?? 
 		return true;  		
     }
-    
-    // pour FareCalculator
-    public boolean isUtilisateurReccurent(String vehicleRegNumber) {
-		// Si déjà venu dans parking, return true, else return false 
-    	// 
-    	
-        Connection con = null;
-        try {
-            con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DBConstants.CHECK_VEHICULE_DEJA_VENU);           
-            ps.setString(1,vehicleRegNumber);
-            ResultSet rs = ps.executeQuery();
-            
-            if(rs.next()){
-            	if (rs.getInt(1) == 1) {
-            		return false;
-            	} 
-            	return true;
-            }
-            
-            dataBaseConfig.closeResultSet(rs);
-            dataBaseConfig.closePreparedStatement(ps);
-        }catch (Exception ex){
-            logger.error("Error ----",ex);
-        }finally {
-            dataBaseConfig.closeConnection(con);
-        }
-        // ?? 
-		return false;
-    }
     	   
     
     public boolean updateTicket(Ticket ticket) {
@@ -168,4 +173,6 @@ public class TicketDAO {
         }
         return false;
     }
+
+
 }

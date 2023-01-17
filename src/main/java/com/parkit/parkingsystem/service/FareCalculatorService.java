@@ -30,41 +30,39 @@ public class FareCalculatorService {
 //        System.out.println("durationbis : " + durationbis);
 
 		double duration = Duration.between(ticket.getInTime(), ticket.getOutTime()).toMinutes() / 60.0;
-		//
-		boolean utilisateurRecurent = isUtilisateurReccurent(ticket.getVehicleRegNumber());
 
 		// TODO: Some tests are failing here. Need to check if this logic is correct
 
+		// Sans les 30 min gratuites
+//			switch (ticket.getParkingSpot().getParkingType()) {
+//			case CAR: {
+//					ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR * ticket.getFareRate());
+//				break;
+//			}
+//			case BIKE: {
+//					ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR * ticket.getFareRate());
+//				break;
+//			}
+//			default:
+//				throw new IllegalArgumentException("Unkown Parking Type");
+//			}
+		
 		if (duration < 0.5) {
 			ticket.setPrice(0.0);
 		} else {
 			switch (ticket.getParkingSpot().getParkingType()) {
 			case CAR: {
-				if (utilisateurRecurent) {
-					ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR * 0.95);
-				} else {
-					ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
-				}
+					ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR * ticket.getFareRate());
 				break;
 			}
 			case BIKE: {
-				if (utilisateurRecurent) {
-					ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR * 0.95);
-				} else {
-					ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
-				}
+					ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR * ticket.getFareRate());
 				break;
 			}
 			default:
 				throw new IllegalArgumentException("Unkown Parking Type");
 			}
 		}
-	}
-
-	private boolean isUtilisateurReccurent(String vehicleRegNumber) {
-
-		return false;
-
 	}
 
 }
