@@ -16,6 +16,12 @@ public class ParkingSpotDAO {
 
     public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+    /**
+     * Returns the number of an available slot, or -1 if no slot available.
+     * @param parkingType
+     * @return -1 if no slot available
+     * @return the parking number chosen (minimum number)
+     */
     public int getNextAvailableSlot(ParkingType parkingType){
         Connection con = null;
         int result=-1;
@@ -37,8 +43,12 @@ public class ParkingSpotDAO {
         return result;
     }
 
+    /**
+     * Updates in database the availability of a given parking spot given in parameter.
+     * @param parkingSpot
+     * @return true if one row was updated, false otherwise
+     */
     public boolean updateParking(ParkingSpot parkingSpot){
-        //update the availability for that parking slot
         Connection con = null;
         try {
             con = dataBaseConfig.getConnection();

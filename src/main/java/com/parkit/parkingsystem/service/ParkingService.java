@@ -9,10 +9,7 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Date;
 
 public class ParkingService {
 
@@ -30,41 +27,50 @@ public class ParkingService {
 		this.ticketDAO = ticketDAO;
 	}
 
+	/**
+	 * If a parking spot is available and the vehicle is not already in parking, 
+	 * updates the status of the parking spot chosen in data base, 
+	 * and creates and saves the ticket in date base.
+	 * @throws Exception if vehicle already in parking
+	 * @throws Exception if 
+	 */
 	public void processIncomingVehicle() {
 		try {
 			ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
+			
 			if (parkingSpot != null && parkingSpot.getId() > 0) {
 				String vehicleRegNumber = getVehicleRegNumber();
-
-				// Une voiture peut entrer deux fois sans sortir
-				if (!vehicleAlreadyInParking(vehicleRegNumber)) {
+				
+				// If vehicle not already in parking
+				if (!isVehicleAlreadyInParking(vehicleRegNumber)) {
 					parkingSpot.setAvailable(false);
-					parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as
-																// false
-//                Date inTime = new Date();              
+					parkingSpotDAO.updateParking(parkingSpot); 
 					LocalDateTime inTime = LocalDateTime.now();
 					Ticket ticket = new Ticket();
-					// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
-					// ticket.setId(ticketID);
 					ticket.setParkingSpot(parkingSpot);
 					ticket.setVehicleRegNumber(vehicleRegNumber);
 					ticket.setPrice(0);
 					ticket.setInTime(inTime);
 					ticket.setOutTime(null);
-					
-					if (VehicleAlreadyParkAtLeastOnceInThisParking(vehicleRegNumber) > 0) {
-						System.out.println("Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
-						ticket.setFareRate(0.75);
+
+					// If vehicle already parked in this parking before
+					if (numberOfTimesVehicleAlreadyParkedInParking(vehicleRegNumber) > 0) {
+						System.out.println(
+								"Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
+						ticket.setFareRate(0.95);
 					} else {
+					// First time for this vehicle in this parking
 						ticket.setFareRate(1.00);
 					}
-					
+
 					ticketDAO.saveTicket(ticket);
 					System.out.println("Generated Ticket and saved in DB");
 					System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
 					System.out.println("Recorded in-time for vehicle number:" + vehicleRegNumber + " is:" + inTime);
+				
 				} else {
-					throw new Exception("Vehicule déjà dans parking");
+				// Vehicle already in parking
+					throw new Exception("Unable to process incoming vehicle : vehicle already in parking");
 				}
 			}
 		} catch (Exception e) {
@@ -72,25 +78,40 @@ public class ParkingService {
 		}
 	}
 
-
-	// getVehicleRegNumber
+	/**
+	 * Returns the vehicle regNumber
+	 * @return the vehicle regNumer written by the user 
+	 * @throws Exception
+	 */
 	private String getVehicleRegNumber() throws Exception {
 		System.out.println("Please type the vehicle registration number and press enter key");
 		return inputReaderUtil.readVehicleRegistrationNumber();
 	}
 
-	private boolean vehicleAlreadyInParking(String immat) {
-		// Chercher dans la BDD si la requete
-//    	SELECT * FROM ticket WHERE reg = ... AND OUTTIME NULL renvoie qqch 
-		return ticketDAO.isVehicleInParking(immat);
-
-	}
-	
-	private int VehicleAlreadyParkAtLeastOnceInThisParking(String immat) {
-		// TODO Auto-generated method stub
-		return ticketDAO.hasVehicleAlreadyParkAtLeastOnceInThisParking(immat);
+	/**
+	 * Returns true or false whether the vehicle is or not in the parking
+	 * @param vehicleRegNumber
+	 * @return true if the vehicle is already in parking, false if it is not (never been there, or already out)
+	 */
+	private boolean isVehicleAlreadyInParking(String vehicleRegNumber) {
+		return ticketDAO.isVehicleAlreadyInParkingInDataBase(vehicleRegNumber);
 	}
 
+	/**
+	 * Returns the number of times the vehicle parked in parking before
+	 * @param vehicleRegNumber
+	 * @return the number of times the vehicle parked in parking (0 if never)
+	 */
+	private int numberOfTimesVehicleAlreadyParkedInParking(String vehicleRegNumber) {
+		return ticketDAO.numberOfTimesVehicleInDataBase(vehicleRegNumber);
+	}
+
+	/**
+	 * Returns the parking spot chosen if one is available.
+	 * @return a parking spot
+	 * @throws Exception if no parking spot is available 
+	 * @throws IllegalArgumentException if ...
+	 */
 	public ParkingSpot getNextParkingNumberIfAvailable() {
 		int parkingNumber = 0;
 		ParkingSpot parkingSpot = null;
@@ -110,6 +131,11 @@ public class ParkingService {
 		return parkingSpot;
 	}
 
+	/**
+	 * Returns the parking type.
+	 * @return the parking type
+	 * @throws IllegalArgumentException if the input is incorrect
+	 */
 	private ParkingType getVehicleType() {
 		System.out.println("Please select vehicle type from menu");
 		System.out.println("1 CAR");
@@ -129,12 +155,17 @@ public class ParkingService {
 		}
 	}
 
+	/**
+	 * Gets the ticket in data base and updates it (adding out time),
+	 * calculates the fare and updates the ticket (adding fare),
+	 * and updates the parking spot in data base (available).
+	 * @throws Exception if  
+	 */
 	public void processExitingVehicle() {
 		try {
 			String vehicleRegNumber = getVehicleRegNumber();
 
 			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
-//            Date outTime = new Date();
 			LocalDateTime outTime = LocalDateTime.now();
 			ticket.setOutTime(outTime);
 			fareCalculatorService.calculateFare(ticket);
@@ -152,5 +183,5 @@ public class ParkingService {
 			logger.error("Unable to process exiting vehicle", e);
 		}
 	}
-	
+
 }
