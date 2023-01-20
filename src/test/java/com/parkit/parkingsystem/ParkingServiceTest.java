@@ -15,7 +15,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import static org.mockito.Mockito.*;
 
@@ -32,7 +31,6 @@ public class ParkingServiceTest {
     private static TicketDAO ticketDAO;
 
     @BeforeEach
-//    private void setUpPerTest() {
     public void setUpPerTest() {
       
     	try {
@@ -44,7 +42,6 @@ public class ParkingServiceTest {
             ticket.setInTime(inTime);            
             ticket.setParkingSpot(parkingSpot);
             ticket.setVehicleRegNumber("ABCDEF");
-            // Rajouté
             ticket.setFareRate(1.0);
             when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
             when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
@@ -57,25 +54,8 @@ public class ParkingServiceTest {
             e.printStackTrace();
             throw  new RuntimeException("Failed to set up test mock objects");
         }
-    	
-//    	try {
-//            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-//            ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
-//            Ticket ticket = new Ticket();
-//            ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
-//            ticket.setParkingSpot(parkingSpot);
-//            ticket.setVehicleRegNumber("ABCDEF");
-//            when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-//            when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-//            when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
-//            parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw  new RuntimeException("Failed to set up test mock objects");
-//        }
     }
-
-    
+     
     // Vérifie que méthode updateParking a été appelée une fois
     @Test
     public void processExitingVehicleTest(){
@@ -83,12 +63,40 @@ public class ParkingServiceTest {
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
     }
 
-    // Rajouté (sur modèle autre méthode)
-    @Test
-    public void processIncomingVehicleTest() {
-//        parkingService.processIncomingVehicle();
-//        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
-//        verify(ticketDAO, Mockito.times(1)).saveTicket(any(Ticket.class));
-    }
-    
+//    // Rajouté (sur modèle autre méthode), marche pas 
+//    @Test
+//    public void processIncomingVehicleTest() {
+////        parkingService.processIncomingVehicle();
+////        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+////        verify(ticketDAO, Mockito.times(1)).saveTicket(any(Ticket.class));
+//    }
+//    
+//    @Test
+//    public void getNextParkingNumberIfAvailableYesTest() {
+//    	
+//    }
+//   
+//    @Test
+//    public void getNextParkingNumberIfAvailableNoTest() {
+//    	
+//    }
+//    
+//    @Test
+//    public void isVehicleAlreadyInParkingYesTest() {
+//    	
+//    }
+//    @Test
+//    public void isVehicleAlreadyInParkingNoTest() {
+//    	
+//    }
+//    
+//    @Test
+//    public void numberOfTimesVehicleAlreadyParkedInParkingZeroTest() {
+//    	
+//    }
+//    
+//    @Test
+//    public void numberOfTimesVehicleAlreadyParkedInParkingOneOrMoreTest() {
+//    	
+//    }
 }

@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class ParkingService {
 
@@ -28,23 +29,24 @@ public class ParkingService {
 	}
 
 	/**
-	 * If a parking spot is available and the vehicle is not already in parking, 
-	 * updates the status of the parking spot chosen in data base, 
-	 * and creates and saves the ticket in date base.
+	 * If a parking spot is available and the vehicle is not already in parking,
+	 * updates the status of the parking spot chosen in data base, and creates and
+	 * saves the ticket in date base.
+	 * 
 	 * @throws Exception if vehicle already in parking
-	 * @throws Exception if 
+	 * @throws Exception if
 	 */
 	public void processIncomingVehicle() {
 		try {
 			ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
-			
+
 			if (parkingSpot != null && parkingSpot.getId() > 0) {
 				String vehicleRegNumber = getVehicleRegNumber();
-				
+
 				// If vehicle not already in parking
 				if (!isVehicleAlreadyInParking(vehicleRegNumber)) {
 					parkingSpot.setAvailable(false);
-					parkingSpotDAO.updateParking(parkingSpot); 
+					parkingSpotDAO.updateParking(parkingSpot);
 					LocalDateTime inTime = LocalDateTime.now();
 					Ticket ticket = new Ticket();
 					ticket.setParkingSpot(parkingSpot);
@@ -59,7 +61,7 @@ public class ParkingService {
 								"Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
 						ticket.setFareRate(0.95);
 					} else {
-					// First time for this vehicle in this parking
+						// First time for this vehicle in this parking
 						ticket.setFareRate(1.00);
 					}
 
@@ -67,9 +69,9 @@ public class ParkingService {
 					System.out.println("Generated Ticket and saved in DB");
 					System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
 					System.out.println("Recorded in-time for vehicle number:" + vehicleRegNumber + " is:" + inTime);
-				
+
 				} else {
-				// Vehicle already in parking
+					// Vehicle already in parking (IF)
 					throw new Exception("Unable to process incoming vehicle : vehicle already in parking");
 				}
 			}
@@ -80,7 +82,8 @@ public class ParkingService {
 
 	/**
 	 * Returns the vehicle regNumber
-	 * @return the vehicle regNumer written by the user 
+	 * 
+	 * @return the vehicle regNumer written by the user
 	 * @throws Exception
 	 */
 	private String getVehicleRegNumber() throws Exception {
@@ -90,8 +93,10 @@ public class ParkingService {
 
 	/**
 	 * Returns true or false whether the vehicle is or not in the parking
+	 * 
 	 * @param vehicleRegNumber
-	 * @return true if the vehicle is already in parking, false if it is not (never been there, or already out)
+	 * @return true if the vehicle is already in parking, false if it is not (never
+	 *         been there, or already out)
 	 */
 	private boolean isVehicleAlreadyInParking(String vehicleRegNumber) {
 		return ticketDAO.isVehicleAlreadyInParkingInDataBase(vehicleRegNumber);
@@ -99,6 +104,7 @@ public class ParkingService {
 
 	/**
 	 * Returns the number of times the vehicle parked in parking before
+	 * 
 	 * @param vehicleRegNumber
 	 * @return the number of times the vehicle parked in parking (0 if never)
 	 */
@@ -108,8 +114,9 @@ public class ParkingService {
 
 	/**
 	 * Returns the parking spot chosen if one is available.
+	 * 
 	 * @return a parking spot
-	 * @throws Exception if no parking spot is available 
+	 * @throws Exception                if no parking spot is available
 	 * @throws IllegalArgumentException if ...
 	 */
 	public ParkingSpot getNextParkingNumberIfAvailable() {
@@ -133,6 +140,7 @@ public class ParkingService {
 
 	/**
 	 * Returns the parking type.
+	 * 
 	 * @return the parking type
 	 * @throws IllegalArgumentException if the input is incorrect
 	 */
@@ -156,28 +164,34 @@ public class ParkingService {
 	}
 
 	/**
-	 * Gets the ticket in data base and updates it (adding out time),
-	 * calculates the fare and updates the ticket (adding fare),
-	 * and updates the parking spot in data base (available).
-	 * @throws Exception if  
+	 * Gets the ticket in data base and updates it (adding out time), calculates the
+	 * fare and updates the ticket (adding fare), and updates the parking spot in
+	 * data base (available).
+	 * 
+	 * @throws Exception if
 	 */
 	public void processExitingVehicle() {
 		try {
 			String vehicleRegNumber = getVehicleRegNumber();
-
 			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
-			LocalDateTime outTime = LocalDateTime.now();
-			ticket.setOutTime(outTime);
-			fareCalculatorService.calculateFare(ticket);
-			if (ticketDAO.updateTicket(ticket)) {
-				ParkingSpot parkingSpot = ticket.getParkingSpot();
-				parkingSpot.setAvailable(true);
-				parkingSpotDAO.updateParking(parkingSpot);
-				System.out.println("Please pay the parking fare:" + ticket.getPrice());
-				System.out.println(
-						"Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
+		
+			if (Objects.nonNull(ticket)) {
+				LocalDateTime outTime = LocalDateTime.now();
+				ticket.setOutTime(outTime);
+				
+				if (ticketDAO.updateTicket(ticket)) {					
+					fareCalculatorService.calculateFare(ticket);
+					ParkingSpot parkingSpot = ticket.getParkingSpot();
+					parkingSpot.setAvailable(true);
+					parkingSpotDAO.updateParking(parkingSpot);
+					System.out.println("Please pay the parking fare:" + ticket.getPrice());
+					System.out.println(
+							"Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
+				} else {
+					throw new Exception("Unable to update ticket information. Error occurred");
+				}
 			} else {
-				System.out.println("Unable to update ticket information. Error occurred");
+				throw new Exception("Ticket is null : vehicle not in the parking");
 			}
 		} catch (Exception e) {
 			logger.error("Unable to process exiting vehicle", e);

@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
@@ -23,17 +24,19 @@ public class TicketDAO {
 
 	/**
 	 * Save in database a ticket given in parameter.
+	 * 
 	 * @param ticket
 	 * @return true if the SQL statement execution was ok (means that the first
 	 *         result is a ResultSet object)
 	 * @return false otherwise (if the first result of the SQL query is an update
-	 *         count or there is no result)
+	 *         count or there is no result) or there was an error fetching the next available slot
 	 */
 	public boolean saveTicket(Ticket ticket) {
 		Connection con = null;
+		PreparedStatement ps = null;
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.SAVE_TICKET);
+			ps = con.prepareStatement(DBConstants.SAVE_TICKET);
 			ps.setInt(1, ticket.getParkingSpot().getId());
 			ps.setString(2, ticket.getVehicleRegNumber());
 			ps.setDouble(3, ticket.getPrice());
@@ -45,6 +48,13 @@ public class TicketDAO {
 		} catch (Exception ex) {
 			logger.error("Error fetching next available slot", ex);
 		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 			dataBaseConfig.closeConnection(con);
 		}
 		// ??
@@ -52,7 +62,9 @@ public class TicketDAO {
 	}
 
 	/**
-	 * Creates a ticket object from date base with the informations found in the base with the vehicleRegNumber given
+	 * Creates a ticket object from date base with the informations found in the
+	 * base with the vehicleRegNumber given
+	 * 
 	 * @param vehicleRegNumber
 	 * @return a ticket
 	 * @return null if ??
@@ -78,24 +90,27 @@ public class TicketDAO {
 					ticket.setOutTime(rs.getTimestamp(5).toLocalDateTime());
 				}
 				ticket.setFareRate(rs.getDouble(7));
+			} else {
+				throw new Exception("Ticket not found");
 			}
 			dataBaseConfig.closeResultSet(rs);
 			dataBaseConfig.closePreparedStatement(ps);
+
 		} catch (Exception ex) {
-			logger.error("Error fetching next available slot", ex);
+			logger.error("Error fetching the ticket", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
-//			return ticket;
 		}
-		// ?? 
 		return ticket;
 	}
 
 	/**
-	 * Updates in database the information of a given ticket in database a ticket given in parameter.
+	 * Updates in database the information of a given ticket in database a ticket
+	 * given in parameter.
+	 * 
 	 * @param ticket
-	 * @return true if the SQL statement execution was ok 
-	 * @return false if ????
+	 * @return true if the SQL statement execution was ok
+	 * @return false if error saving ticket info 
 	 */
 	public boolean updateTicket(Ticket ticket) {
 		Connection con = null;
@@ -117,9 +132,11 @@ public class TicketDAO {
 
 	/**
 	 * Searches in data base if a vehicle is already in parking, given is regNumber
+	 * 
 	 * @param vehicleRegNumber
-	 * @return true if the vehicle is in parking (which means that a went in but not already out)
-	 * @return false if the vehicle has never been in the parking, or if it went out 
+	 * @return true if the vehicle is in parking (which means that a went in but not
+	 *         already out)
+	 * @return false if the vehicle has never been in the parking, or if it went out
 	 */
 	public boolean isVehicleAlreadyInParkingInDataBase(String vehicleRegNumber) {
 
@@ -148,7 +165,9 @@ public class TicketDAO {
 	}
 
 	/**
-	 * 	Searches in data base how many times the vehicle has already parked in parking, given is regNumber
+	 * Searches in data base how many times the vehicle has already parked in
+	 * parking, given is regNumber
+	 * 
 	 * @param vehicleRegNumber
 	 * @return the number of times (0 if never)
 	 */

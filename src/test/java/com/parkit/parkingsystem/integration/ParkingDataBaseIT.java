@@ -28,7 +28,6 @@ public class ParkingDataBaseIT {
 
     @BeforeAll
     public static void setUp() throws Exception{
-//    private static void setUp() throws Exception{
         parkingSpotDAO = new ParkingSpotDAO();
         parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
         ticketDAO = new TicketDAO();
@@ -38,15 +37,15 @@ public class ParkingDataBaseIT {
 
     @BeforeEach
     public void setUpPerTest() throws Exception {
-    //    private void setUpPerTest() throws Exception {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
         dataBasePrepareService.clearDataBaseEntries();
     }
 
     @AfterAll
-//    private static void tearDown(){
     public static void tearDown(){
+    	
+    	//TODO 
 
     }
 
@@ -54,7 +53,7 @@ public class ParkingDataBaseIT {
     public void testParkingACar(){
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
-        //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
+        //TODO: check that a ticket is actually saved in DB and Parking table is updated with availability
     }
 
     @Test

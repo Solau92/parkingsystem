@@ -21,7 +21,7 @@ public class FareCalculatorService {
 
 		double duration = Duration.between(ticket.getInTime(), ticket.getOutTime()).toMinutes() / 60.0;
 
-		if (duration < 0.5) {
+		if (duration <= 0.5) {
 			ticket.setPrice(0.0);
 		} else {
 			switch (ticket.getParkingSpot().getParkingType()) {
