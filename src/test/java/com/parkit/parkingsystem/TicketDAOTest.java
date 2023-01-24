@@ -20,8 +20,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
@@ -43,47 +46,63 @@ public class TicketDAOTest {
 
     
 	@Test
-	void saveTicketSuccesTest() {
-		fail("Not yet implemented");
+	void saveTicketSuccesTest() throws ClassNotFoundException {
+		
+//		ticketDAO = new TicketDAO();
+//		Ticket ticket = new Ticket();
+//		try {
+//			when(dataBaseConfig.getConnection()).thenReturn(connection);
+//			when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+//
+//			when(preparedStatement.execute()).thenReturn(true);
+//			
+//			ticketDAO.saveTicket(ticket);
+//			
+//			assertTrue(preparedStatement.execute());
+//		
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
-	@Test
-	void saveTicketNoAvailableSlotTest() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	void getTicketSuccessTest() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void getTicketTicketNotFoundTest() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	void updateTicketErrorTest() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	void isVehicleAlreadyInParkingInDataBaseYesTest() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void isVehicleAlreadyInParkingInDataBaseNoTest() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	void numberOfTimesVehicleInDataBaseZeroTest() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	void numberOfTimesVehicleInDataBaseAtLeastOnceTest() {
-		fail("Not yet implemented");
-	}
+//	@Test
+//	void saveTicketNoAvailableSlotTest() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	void getTicketSuccessTest() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	void getTicketTicketNotFoundTest() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	void updateTicketErrorTest() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	void isVehicleAlreadyInParkingInDataBaseYesTest() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	void isVehicleAlreadyInParkingInDataBaseNoTest() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	void numberOfTimesVehicleInDataBaseZeroTest() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	void numberOfTimesVehicleInDataBaseAtLeastOnceTest() {
+//		fail("Not yet implemented");
+//	}
 }

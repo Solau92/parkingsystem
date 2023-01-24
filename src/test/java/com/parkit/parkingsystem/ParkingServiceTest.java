@@ -36,8 +36,7 @@ public class ParkingServiceTest {
 	private static Logger logger;
 
 	/*
-	 * *************************************** 
-	 * Tests processIncomingVehicle
+	 * *************************************** Tests processIncomingVehicle
 	 ****************************************/
 
 	@Test
@@ -67,7 +66,7 @@ public class ParkingServiceTest {
 
 		try {
 			when(inputReaderUtil.readSelection()).thenReturn(1);
-			
+
 			when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
 			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 			when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
@@ -78,17 +77,16 @@ public class ParkingServiceTest {
 			verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	@Test
-	void processIncomingVehicle_CarUpdateError_Test2() {
+	void processIncomingVehicle_CarUpdateError_Test() {
 
 		try {
 			when(inputReaderUtil.readSelection()).thenReturn(1);
-			
+
 			when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
 			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 			when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(false);
@@ -99,10 +97,10 @@ public class ParkingServiceTest {
 			verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
 	@Test
 	void processIncomingVehicle_WrongVehicleTypeInput_Test() {
 
@@ -111,26 +109,25 @@ public class ParkingServiceTest {
 
 			parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 			parkingService.setLogger(logger);
-			
+
 			parkingService.processIncomingVehicle();
 			verify(logger, Mockito.times(2)).error(anyString(), any(Throwable.class));
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Test
 	void processIncomingVehicle_VehicleAlreadyInParking_Test() {
-		
+
 		try {
 			when(inputReaderUtil.readSelection()).thenReturn(1);
-			
+
 			when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
 			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 			when(ticketDAO.isVehicleAlreadyInParkingInDataBase(anyString())).thenReturn(true);
-			
+
 			parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 			parkingService.setLogger(logger);
 
@@ -138,18 +135,17 @@ public class ParkingServiceTest {
 			verify(logger, Mockito.times(1)).error(anyString(), any(Throwable.class));
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	@Test
 	void processIncomingVehicle_VehicleAlreadyParkedInParking_Test() {
-		
+
 		try {
 
 			when(inputReaderUtil.readSelection()).thenReturn(1);
-			
+
 			when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
 			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 			when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
@@ -162,15 +158,14 @@ public class ParkingServiceTest {
 			verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
 
 	/*
-	 * *************************************** Tests processExitingVehicle
-	 * **********
+	 * *************************************** 
+	 * Tests processExitingVehicle
 	 ****************************************/
 
 //    @BeforeEach
@@ -260,34 +255,4 @@ public class ParkingServiceTest {
 		verify(logger, Mockito.times(1)).error(anyString(), any(Throwable.class));
 	}
 
-
-//    
-//    @Test
-//    public void getNextParkingNumberIfAvailableYesTest() {
-//    	
-//    }
-//   
-//    @Test
-//    public void getNextParkingNumberIfAvailableNoTest() {
-//    	
-//    }
-//    
-//    @Test
-//    public void isVehicleAlreadyInParkingYesTest() {
-//    	
-//    }
-//    @Test
-//    public void isVehicleAlreadyInParkingNoTest() {
-//    	
-//    }
-//    
-//    @Test
-//    public void numberOfTimesVehicleAlreadyParkedInParkingZeroTest() {
-//    	
-//    }
-//    
-//    @Test
-//    public void numberOfTimesVehicleAlreadyParkedInParkingOneOrMoreTest() {
-//    	
-//    }
 }

@@ -29,7 +29,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareCarOneHourTest() {
+	void calculateFareCarOneHourTest() {
 
 		// GIVEN
 		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
@@ -63,11 +63,11 @@ public class FareCalculatorServiceTest {
 		fareCalculatorService.calculateFare(ticket);
 
 		// THEN
-		assertEquals(ticket.getPrice(), Fare.BIKE_RATE_PER_HOUR);
+		assertEquals(Fare.BIKE_RATE_PER_HOUR, ticket.getPrice());
 	}
 
 	@Test
-	public void calculateFareUnkownTypeTest() {
+	void calculateFareUnkownTypeTest() {
 
 		// GIVEN
 		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
@@ -87,7 +87,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareCarWithFutureInTimeTest() {
+	void calculateFareCarWithFutureInTimeTest() {
 
 		// GIVEN
 		LocalDateTime inTime = LocalDateTime.now().plusHours(1);
@@ -124,7 +124,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareBikeWithLessThanOneHourAndMoreThan30MinParkingTimeTest() {
+	void calculateFareBikeWithLessThanOneHourAndMoreThan30MinParkingTimeTest() {
 
 		// GIVEN
 		LocalDateTime inTime = LocalDateTime.now().minusMinutes(45);
@@ -144,7 +144,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareCarWithLessThanOneHourAndMoreThan30MinParkingTimeTest() {
+	void calculateFareCarWithLessThanOneHourAndMoreThan30MinParkingTimeTest() {
 
 		// GIVEN
 		LocalDateTime inTime = LocalDateTime.now().minusMinutes(45);
@@ -164,7 +164,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareCarWithLessThan30MinParkingTimeTest() {
+	void calculateFareCarWithLessThan30MinParkingTimeTest() {
 
 		// GIVEN
 		LocalDateTime inTime = LocalDateTime.now().minusMinutes(15);
@@ -178,11 +178,11 @@ public class FareCalculatorServiceTest {
 		fareCalculatorService.calculateFare(ticket);
 
 		// THEN
-		assertEquals(ticket.getPrice(), 0.0);
+		assertEquals(0.0, ticket.getPrice());
 	}
 
 	@Test
-	public void calculateFareBikeWithLessThan30MinParkingTimeTest() {
+	void calculateFareBikeWithLessThan30MinParkingTimeTest() {
 
 		// GIVEN
 		LocalDateTime inTime = LocalDateTime.now().minusMinutes(15);
@@ -196,11 +196,11 @@ public class FareCalculatorServiceTest {
 		fareCalculatorService.calculateFare(ticket);
 
 		// THEN
-		assertEquals(ticket.getPrice(), 0.0);
+		assertEquals(0.0, ticket.getPrice());
 	}
 
 	@Test
-	public void calculateFareCarWithMoreThanADayParkingTimeTest() {
+	void calculateFareCarWithMoreThanADayParkingTimeTest() {
 
 		// GIVEN
 		LocalDateTime inTime = LocalDateTime.now().minusDays(1);
@@ -219,7 +219,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareCarRecurentUser() {
+	void calculateFareCarRecurentUser() {
 
 		// GIVEN
 		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
@@ -228,7 +228,6 @@ public class FareCalculatorServiceTest {
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
-		// ?? ok et faudra tester aussi le setFareRate ??
 		ticket.setFareRate(0.95);
 
 		// WHEN
@@ -239,7 +238,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareBikeRecurentUserTest() {
+	void calculateFareBikeRecurentUserTest() {
 		// GIVEN
 		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
 		LocalDateTime outTime = LocalDateTime.now();

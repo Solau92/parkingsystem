@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.fail;
@@ -43,22 +44,22 @@ public class ParkingSpotDAOTest {
 
     
     @Test
-    public void getNextAvailableSlot_Ok_Test() {
+    void getNextAvailableSlot_Ok_Test() {
     	fail("Not yet implemented");
     }
     
     @Test
-    public void getNextAvailableSlot_NoAvailable_Test() {
+    void getNextAvailableSlot_NoAvailable_Test() {
     	fail("Not yet implemented");
     }
     
     @Test
-    public void upDateParking_Ok_Test() {
+    void upDateParking_Ok_Test() {
     	fail("Not yet implemented");
     }
     
     @Test
-    public void upDateParking_Error_Test() {
+    void upDateParking_Error_Test() {
     	fail("Not yet implemented");
     }
 }
