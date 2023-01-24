@@ -14,7 +14,8 @@ import java.util.Objects;
 
 public class ParkingService {
 
-	private static final Logger logger = LogManager.getLogger("ParkingService");
+//	private static final Logger logger = LogManager.getLogger("ParkingService");
+	private static Logger logger = LogManager.getLogger("ParkingService");
 
 	private static FareCalculatorService fareCalculatorService = new FareCalculatorService();
 
@@ -26,6 +27,13 @@ public class ParkingService {
 		this.inputReaderUtil = inputReaderUtil;
 		this.parkingSpotDAO = parkingSpotDAO;
 		this.ticketDAO = ticketDAO;
+	}
+
+	/**
+	 * set the logger
+	 */
+	public void setLogger(Logger logger) {
+		this.logger = logger;
 	}
 
 	/**
@@ -46,7 +54,10 @@ public class ParkingService {
 				// If vehicle not already in parking
 				if (!isVehicleAlreadyInParking(vehicleRegNumber)) {
 					parkingSpot.setAvailable(false);
-					parkingSpotDAO.updateParking(parkingSpot);
+								
+					if (!parkingSpotDAO.updateParking(parkingSpot)) {
+						throw new Exception("Failed to update parking in database");
+					}
 					LocalDateTime inTime = LocalDateTime.now();
 					Ticket ticket = new Ticket();
 					ticket.setParkingSpot(parkingSpot);
@@ -71,9 +82,11 @@ public class ParkingService {
 					System.out.println("Recorded in-time for vehicle number:" + vehicleRegNumber + " is:" + inTime);
 
 				} else {
-					// Vehicle already in parking (IF)
+					// Vehicle already in parking
 					throw new Exception("Unable to process incoming vehicle : vehicle already in parking");
 				}
+			} else {
+				throw new Exception("No slot available");
 			}
 		} catch (Exception e) {
 			logger.error("Unable to process incoming vehicle", e);
@@ -119,7 +132,7 @@ public class ParkingService {
 	 * @throws Exception                if no parking spot is available
 	 * @throws IllegalArgumentException if ...
 	 */
-	public ParkingSpot getNextParkingNumberIfAvailable() {
+	private ParkingSpot getNextParkingNumberIfAvailable() {
 		int parkingNumber = 0;
 		ParkingSpot parkingSpot = null;
 		try {
@@ -174,13 +187,13 @@ public class ParkingService {
 		try {
 			String vehicleRegNumber = getVehicleRegNumber();
 			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
-		
+
 			if (Objects.nonNull(ticket)) {
 				LocalDateTime outTime = LocalDateTime.now();
 				ticket.setOutTime(outTime);
-				
-				if (ticketDAO.updateTicket(ticket)) {					
-					fareCalculatorService.calculateFare(ticket);
+				fareCalculatorService.calculateFare(ticket);
+
+				if (ticketDAO.updateTicket(ticket)) {
 					ParkingSpot parkingSpot = ticket.getParkingSpot();
 					parkingSpot.setAvailable(true);
 					parkingSpotDAO.updateParking(parkingSpot);

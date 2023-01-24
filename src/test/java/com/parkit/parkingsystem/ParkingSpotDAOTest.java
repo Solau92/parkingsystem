@@ -26,9 +26,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TicketDAOTest {
+public class ParkingSpotDAOTest {
 
-	private static TicketDAO ticketDAO;
+	private static ParkingSpotDAO parkingSpotDAO;
 
 	@Mock
 	private static Connection connection;
@@ -42,48 +42,23 @@ public class TicketDAOTest {
 	private static Logger logger;
 
     
-	@Test
-	void saveTicketSuccesTest() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void saveTicketNoAvailableSlotTest() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	void getTicketSuccessTest() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void getTicketTicketNotFoundTest() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	void updateTicketErrorTest() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	void isVehicleAlreadyInParkingInDataBaseYesTest() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void isVehicleAlreadyInParkingInDataBaseNoTest() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	void numberOfTimesVehicleInDataBaseZeroTest() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	void numberOfTimesVehicleInDataBaseAtLeastOnceTest() {
-		fail("Not yet implemented");
-	}
+    @Test
+    public void getNextAvailableSlot_Ok_Test() {
+    	fail("Not yet implemented");
+    }
+    
+    @Test
+    public void getNextAvailableSlot_NoAvailable_Test() {
+    	fail("Not yet implemented");
+    }
+    
+    @Test
+    public void upDateParking_Ok_Test() {
+    	fail("Not yet implemented");
+    }
+    
+    @Test
+    public void upDateParking_Error_Test() {
+    	fail("Not yet implemented");
+    }
 }

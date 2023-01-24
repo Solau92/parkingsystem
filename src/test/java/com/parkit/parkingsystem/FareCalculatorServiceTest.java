@@ -83,7 +83,7 @@ public class FareCalculatorServiceTest {
 		// THEN
 		assertThrows(NullPointerException.class, () -> fareCalculatorService.calculateFare(ticket));
 		
-		// Comment tester le default et donc IllegalArgumentException de calculateFare ??
+		// Comment tester le default et donc IllegalArgumentException de calculateFare ?? Pas besoin 
 	}
 
 	@Test
