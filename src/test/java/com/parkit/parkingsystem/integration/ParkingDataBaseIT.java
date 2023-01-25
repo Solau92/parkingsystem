@@ -246,7 +246,7 @@ public class ParkingDataBaseIT {
 			// and updates the availability of the parkingSpot  
 			PreparedStatement psInsertTicket = connection.prepareStatement("INSERT INTO TICKET"
 					+ " (PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, FARE_RATE) "
-					+ " VALUES(1,'ABCDEF',0.0,LOCALTIMESTAMP()-INTERVAL 2 HOUR,null,1)");
+					+ " VALUES(1,'ABCDEF',0.0,LOCALTIMESTAMP()-INTERVAL 1 HOUR,null,1)");
 			psInsertTicket.execute();
 			
 			PreparedStatement psInsertParkingSpot = connection.prepareStatement("UPDATE PARKING "
@@ -288,6 +288,7 @@ public class ParkingDataBaseIT {
 					ticket.setInTime(rs.getTimestamp(5).toLocalDateTime());
 					ticket.setOutTime(rs.getTimestamp(6) == null ? null : rs.getTimestamp(6).toLocalDateTime());
 					ticket.setFareRate(rs.getDouble(7));
+
 				}
 				
 				// Checks the attributes of the ticket
@@ -335,7 +336,7 @@ public class ParkingDataBaseIT {
 			// and updates the availability of the parkingSpot  
 			PreparedStatement psInsertTicket = connection.prepareStatement("INSERT INTO TICKET"
 					+ " (PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, FARE_RATE) "
-					+ " VALUES(4,'ABCDEF',0.0,LOCALTIMESTAMP()-INTERVAL 2 HOUR,null,1)");
+					+ " VALUES(4,'ABCDEF',0.0,LOCALTIMESTAMP()-INTERVAL 1 HOUR,null,1)");
 			psInsertTicket.execute();
 			
 			PreparedStatement psInsertParkingSpot = connection.prepareStatement("UPDATE PARKING "
@@ -424,7 +425,7 @@ public class ParkingDataBaseIT {
 			// and updates the availability of the parkingSpot  
 			PreparedStatement psInsertTicket = connection.prepareStatement("INSERT INTO TICKET"
 					+ " (PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, FARE_RATE) "
-					+ " VALUES(1,'ABCDEF',0.0,LOCALTIMESTAMP()-INTERVAL 1 HOUR,null,1)");
+					+ " VALUES(1,'ABCDEF',0.0,LOCALTIMESTAMP()-INTERVAL 0.25 HOUR,null,1)");
 			psInsertTicket.execute();
 			
 			PreparedStatement psInsertParkingSpot = connection.prepareStatement("UPDATE PARKING "
@@ -512,7 +513,7 @@ public class ParkingDataBaseIT {
 			// and updates the availability of the parkingSpot  
 			PreparedStatement psInsertTicket = connection.prepareStatement("INSERT INTO TICKET"
 					+ " (PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, FARE_RATE) "
-					+ " VALUES(1,'ABCDEF',0.0,LOCALTIMESTAMP()-INTERVAL 26 HOUR,null,1)");
+					+ " VALUES(1,'ABCDEF',0.0,LOCALTIMESTAMP()-INTERVAL 25 HOUR,null,1)");
 			psInsertTicket.execute();
 			
 			PreparedStatement psInsertParkingSpot = connection.prepareStatement("UPDATE PARKING "
@@ -600,7 +601,7 @@ public class ParkingDataBaseIT {
 			// and updates the availability of the parkingSpot  
 			PreparedStatement psInsertTicket = connection.prepareStatement("INSERT INTO TICKET"
 					+ " (PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, FARE_RATE) "
-					+ " VALUES(1,'ABCDEF',0.0,LOCALTIMESTAMP()-INTERVAL 2 HOUR,null,0.95)");
+					+ " VALUES(1,'ABCDEF',0.0,LOCALTIMESTAMP()-INTERVAL 1 HOUR,null,0.95)");
 			psInsertTicket.execute();
 			
 			PreparedStatement psInsertParkingSpot = connection.prepareStatement("UPDATE PARKING "

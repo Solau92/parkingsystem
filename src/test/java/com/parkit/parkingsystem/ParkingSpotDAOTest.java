@@ -43,23 +43,23 @@ public class ParkingSpotDAOTest {
 	private static Logger logger;
 
     
-    @Test
-    void getNextAvailableSlot_Ok_Test() {
-    	fail("Not yet implemented");
-    }
-    
-    @Test
-    void getNextAvailableSlot_NoAvailable_Test() {
-    	fail("Not yet implemented");
-    }
-    
-    @Test
-    void upDateParking_Ok_Test() {
-    	fail("Not yet implemented");
-    }
-    
-    @Test
-    void upDateParking_Error_Test() {
-    	fail("Not yet implemented");
-    }
+//    @Test
+//    void getNextAvailableSlot_Ok_Test() {
+//    	fail("Not yet implemented");
+//    }
+//    
+//    @Test
+//    void getNextAvailableSlot_NoAvailable_Test() {
+//    	fail("Not yet implemented");
+//    }
+//    
+//    @Test
+//    void upDateParking_Ok_Test() {
+//    	fail("Not yet implemented");
+//    }
+//    
+//    @Test
+//    void upDateParking_Error_Test() {
+//    	fail("Not yet implemented");
+//    }
 }

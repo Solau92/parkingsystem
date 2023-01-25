@@ -189,7 +189,7 @@ public class ParkingService {
 			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
 
 			if (Objects.nonNull(ticket)) {
-				LocalDateTime outTime = LocalDateTime.now();
+				LocalDateTime outTime = LocalDateTime.now();				
 				ticket.setOutTime(outTime);
 				fareCalculatorService.calculateFare(ticket);
 

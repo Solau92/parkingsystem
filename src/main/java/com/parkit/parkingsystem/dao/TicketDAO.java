@@ -114,9 +114,10 @@ public class TicketDAO {
 	 */
 	public boolean updateTicket(Ticket ticket) {
 		Connection con = null;
+		PreparedStatement ps = null;
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
+			ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
 			ps.setDouble(1, ticket.getPrice());
 			ps.setTimestamp(2, Timestamp.valueOf(ticket.getOutTime()));
 			ps.setInt(3, ticket.getId());
@@ -125,6 +126,13 @@ public class TicketDAO {
 		} catch (Exception ex) {
 			logger.error("Error saving ticket info", ex);
 		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 			dataBaseConfig.closeConnection(con);
 		}
 		return false;
