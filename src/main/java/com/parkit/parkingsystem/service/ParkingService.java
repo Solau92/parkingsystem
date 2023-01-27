@@ -30,7 +30,7 @@ public class ParkingService {
 	}
 
 	/**
-	 * set the logger
+	 * Sets the logger
 	 */
 	public void setLogger(Logger logger) {
 		this.logger = logger;
@@ -41,8 +41,7 @@ public class ParkingService {
 	 * updates the status of the parking spot chosen in data base, and creates and
 	 * saves the ticket in date base.
 	 * 
-	 * @throws Exception if vehicle already in parking
-	 * @throws Exception if
+	 * @throws Exception if vehicle already in parking, no spot available, and if problem updating parking spot in database
 	 */
 	public void processIncomingVehicle() {
 		try {
@@ -54,7 +53,7 @@ public class ParkingService {
 				// If vehicle not already in parking
 				if (!isVehicleAlreadyInParking(vehicleRegNumber)) {
 					parkingSpot.setAvailable(false);
-								
+
 					if (!parkingSpotDAO.updateParking(parkingSpot)) {
 						throw new Exception("Failed to update parking in database");
 					}
@@ -94,7 +93,7 @@ public class ParkingService {
 	}
 
 	/**
-	 * Returns the vehicle regNumber
+	 * Returns the vehicle regNumber.
 	 * 
 	 * @return the vehicle regNumer written by the user
 	 * @throws Exception
@@ -129,8 +128,8 @@ public class ParkingService {
 	 * Returns the parking spot chosen if one is available.
 	 * 
 	 * @return a parking spot
-	 * @throws Exception                if no parking spot is available
-	 * @throws IllegalArgumentException if ...
+	 * @throws Exception if no parking spot is available
+	 * @throws IllegalArgumentException if problem of input 
 	 */
 	private ParkingSpot getNextParkingNumberIfAvailable() {
 		int parkingNumber = 0;
@@ -181,7 +180,8 @@ public class ParkingService {
 	 * fare and updates the ticket (adding fare), and updates the parking spot in
 	 * data base (available).
 	 * 
-	 * @throws Exception if
+	 * @throws Exception if error (in particular when vehicle not in the parking or
+	 *                   error while searching ticket in database)
 	 */
 	public void processExitingVehicle() {
 		try {
@@ -189,7 +189,7 @@ public class ParkingService {
 			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
 
 			if (Objects.nonNull(ticket)) {
-				LocalDateTime outTime = LocalDateTime.now();				
+				LocalDateTime outTime = LocalDateTime.now();
 				ticket.setOutTime(outTime);
 				fareCalculatorService.calculateFare(ticket);
 

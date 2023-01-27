@@ -10,6 +10,11 @@ public class InputReaderUtil {
     private static Scanner scan = new Scanner(System.in);
     private static final Logger logger = LogManager.getLogger("InputReaderUtil");
 
+    /**
+     * Returns an int corresponding to the choice made by the user.
+     * @return int 
+     * @throws Exception if error while reading the input user
+     */
     public int readSelection() {
         try {
             int input = Integer.parseInt(scan.nextLine());
@@ -21,6 +26,12 @@ public class InputReaderUtil {
         }
     }
 
+    /**
+     * Returns a String corresponding to the vehicle registration number written by the user
+     * @return the vehicle registration number as a String
+     * @throws IllegalArgumentException if noting is written by the user
+     * @throws Exception if error while reading the input user
+     */
     public String readVehicleRegistrationNumber() throws Exception {
         try {
             String vehicleRegNumber= scan.nextLine();

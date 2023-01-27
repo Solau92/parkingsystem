@@ -9,7 +9,6 @@ import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
 import org.apache.logging.log4j.Logger;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -18,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,12 +33,13 @@ public class ParkingServiceTest {
 	@Mock
 	private static Logger logger;
 
-	/*
-	 * *************************************** Tests processIncomingVehicle
+	/* *************************************** 
+	 * Tests processIncomingVehicle
 	 ****************************************/
 
 	@Test
 	void processIncomingVehicle_NoSpotAvailable_Test() {
+		
 		// Cas où parkingSpot = null || parkingSpot.getId <= 0
 		try {
 			// GIVEN
@@ -168,7 +167,6 @@ public class ParkingServiceTest {
 	 * Tests processExitingVehicle
 	 ****************************************/
 
-//    @BeforeEach
 	public void setUpPerNormalTest() {
 
 		try {
@@ -194,9 +192,9 @@ public class ParkingServiceTest {
 		}
 	}
 
-	// Vérifie que méthode updateParking a été appelée une fois dans le cas "normal"
+	// Checks that the method updateParking was use once in "normal" case
 	@Test
-	void processExitingVehicleOkTest() {
+	void processExitingVehicle_Ok_Test() {
 		setUpPerNormalTest();
 		parkingService.processExitingVehicle();
 		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
@@ -219,7 +217,7 @@ public class ParkingServiceTest {
 	}
 
 	@Test
-	void processExitingVehicleTicketNullTest() {
+	void processExitingVehicle_TicketNull_Test() {
 		setUpPerTicketNullTest();
 		parkingService.processExitingVehicle();
 		verify(logger, Mockito.times(1)).error(anyString(), any(Throwable.class));
@@ -249,7 +247,7 @@ public class ParkingServiceTest {
 	}
 
 	@Test
-	void processExitingVehiclePbUpdateTicketTest() {
+	void processExitingVehicle_PbUpdateTicket_Test() {
 		setUpPerUpDateTicketFalseTest();
 		parkingService.processExitingVehicle();
 		verify(logger, Mockito.times(1)).error(anyString(), any(Throwable.class));
