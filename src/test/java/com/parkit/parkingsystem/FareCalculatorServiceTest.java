@@ -48,7 +48,7 @@ public class FareCalculatorServiceTest {
 	}
 
 	@Test
-	public void calculateFareBike_OneHour_Test() {
+	void calculateFareBike_OneHour_Test() {
 
 		// GIVEN
 		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
@@ -66,6 +66,24 @@ public class FareCalculatorServiceTest {
 		assertEquals(Fare.BIKE_RATE_PER_HOUR, ticket.getPrice());
 	}
 
+	@Test
+	void calculateFareBike_TicketOutTimeNull_Test() {
+
+		// GIVEN
+		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
+		LocalDateTime outTime = null;
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
+		ticket.setInTime(inTime);
+		ticket.setOutTime(outTime);
+		ticket.setParkingSpot(parkingSpot);
+		ticket.setFareRate(1);
+
+		// WHEN
+
+		// THEN
+		assertThrows(Exception.class, () -> fareCalculatorService.calculateFare(ticket));
+	}
+	
 	@Test
 	void calculateFare_UnkownType_Test() {
 
@@ -105,7 +123,7 @@ public class FareCalculatorServiceTest {
 
 	}
 	@Test
-	public void calculateFareBike_WithFutureInTime_Test() {
+	void calculateFareBike_WithFutureInTime_Test() {
 
 		// GIVEN
 		LocalDateTime inTime = LocalDateTime.now().plusHours(1);
@@ -179,6 +197,8 @@ public class FareCalculatorServiceTest {
 
 		// THEN
 		assertEquals(0.0, ticket.getPrice());
+		System.out.println(inTime);
+		System.out.println(outTime);
 	}
 
 	@Test
@@ -189,7 +209,9 @@ public class FareCalculatorServiceTest {
 		LocalDateTime outTime = LocalDateTime.now();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
 		ticket.setInTime(inTime);
+		System.out.println("before :" + inTime);
 		ticket.setOutTime(outTime);
+		System.out.println("before :" + outTime);
 		ticket.setParkingSpot(parkingSpot);
 
 		// WHEN

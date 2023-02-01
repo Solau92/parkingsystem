@@ -37,13 +37,19 @@ public class ParkingService {
 	}
 
 	/**
-	 * If a parking spot is available and the vehicle is not already in parking,
-	 * updates the status of the parking spot chosen in data base, and creates and
-	 * saves the ticket in date base.
+	 * REVOIR !!!!!! If a parking spot is available and the vehicle is not already
+	 * in parking, updates the status of the parking spot chosen in data base, and
+	 * creates and saves the ticket in date base.
 	 * 
-	 * @throws Exception if vehicle already in parking, no spot available, and if problem updating parking spot in database
+	 * @throws Exception if vehicle already in parking, no spot available, and if
+	 *                   problem updating parking spot in database
 	 */
+
 	public void processIncomingVehicle() {
+		processIncomingVehicle(null);
+	}
+
+	public void processIncomingVehicle(LocalDateTime inTime) {
 		try {
 			ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
 
@@ -57,7 +63,11 @@ public class ParkingService {
 					if (!parkingSpotDAO.updateParking(parkingSpot)) {
 						throw new Exception("Failed to update parking in database");
 					}
-					LocalDateTime inTime = LocalDateTime.now();
+
+					if (inTime == null) {
+						inTime = LocalDateTime.now();
+					}
+
 					Ticket ticket = new Ticket();
 					ticket.setParkingSpot(parkingSpot);
 					ticket.setVehicleRegNumber(vehicleRegNumber);
@@ -128,8 +138,8 @@ public class ParkingService {
 	 * Returns the parking spot chosen if one is available.
 	 * 
 	 * @return a parking spot
-	 * @throws Exception if no parking spot is available
-	 * @throws IllegalArgumentException if problem of input 
+	 * @throws Exception                if no parking spot is available
+	 * @throws IllegalArgumentException if problem of input
 	 */
 	private ParkingSpot getNextParkingNumberIfAvailable() {
 		int parkingNumber = 0;
@@ -176,20 +186,26 @@ public class ParkingService {
 	}
 
 	/**
-	 * Gets the ticket in data base and updates it (adding out time), calculates the
-	 * fare and updates the ticket (adding fare), and updates the parking spot in
-	 * data base (available).
+	 * REVOIR !!!!! Gets the ticket in data base and updates it (adding out time),
+	 * calculates the fare and updates the ticket (adding fare), and updates the
+	 * parking spot in data base (available).
 	 * 
 	 * @throws Exception if error (in particular when vehicle not in the parking or
 	 *                   error while searching ticket in database)
 	 */
 	public void processExitingVehicle() {
+		processExitingVehicle(null);
+	}
+
+	public void processExitingVehicle(LocalDateTime outTime) {
 		try {
 			String vehicleRegNumber = getVehicleRegNumber();
 			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
 
 			if (Objects.nonNull(ticket)) {
-				LocalDateTime outTime = LocalDateTime.now();
+				if (outTime == null) {
+					outTime = LocalDateTime.now();
+				}
 				ticket.setOutTime(outTime);
 				fareCalculatorService.calculateFare(ticket);
 

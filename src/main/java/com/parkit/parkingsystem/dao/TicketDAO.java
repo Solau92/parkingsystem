@@ -46,8 +46,9 @@ public class TicketDAO {
 			ps.setDouble(6, ticket.getFareRate());
 			return ps.execute();
 		} catch (Exception ex) {
-			logger.error("Error fetching next available slot", ex);
-		} finally {
+			logger.error("Error connection ?", ex);
+		} 
+		finally {
 			if (ps != null) {
 				try {
 					ps.close();
@@ -57,7 +58,6 @@ public class TicketDAO {
 			}
 			dataBaseConfig.closeConnection(con);
 		}
-		// ??
 		return false;
 	}
 
@@ -85,13 +85,13 @@ public class TicketDAO {
 				ticket.setVehicleRegNumber(vehicleRegNumber);
 				ticket.setPrice(rs.getDouble(3));
 				ticket.setInTime(rs.getTimestamp(4).toLocalDateTime());
-				// Marche, mais revoir :
+				// Marche, mais revoir : (rs.setTimestamp(5, (Objects.isNull(ticket.getOutTime()) ? null : (Timestamp.valueOf(ticket.getOutTime().truncatedTo(ChronoUnit.SECONDS)))));
 				if (rs.getTimestamp(5) != null) { // if outTime not null
 					ticket.setOutTime(rs.getTimestamp(5).toLocalDateTime());
-				}
+				}							
 				ticket.setFareRate(rs.getDouble(7));
 			} else {
-				throw new Exception("Ticket not found");
+//				throw new Exception("Ticket not found");
 			}
 			dataBaseConfig.closeResultSet(rs);
 			dataBaseConfig.closePreparedStatement(ps);
@@ -156,19 +156,20 @@ public class TicketDAO {
 			ResultSet rs = ps.executeQuery();
 
 			if (rs.next()) {
-				if (rs.getInt(1) == 0) {
-					return false;
-				}
-				return true;
+				
+				return rs.getInt(1) != 0;
+//				if (rs.getInt(1) == 0) {
+//					return false;
+//				}
+//				return true;
 			}
 			dataBaseConfig.closeResultSet(rs);
 			dataBaseConfig.closePreparedStatement(ps);
 		} catch (Exception ex) {
-			logger.error("Error ----", ex);
+			logger.error("Error connection", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
 		}
-		// ??
 		return true;
 	}
 
@@ -195,11 +196,10 @@ public class TicketDAO {
 			dataBaseConfig.closeResultSet(rs);
 			dataBaseConfig.closePreparedStatement(ps);
 		} catch (Exception ex) {
-			logger.error("Error ----", ex);
+			logger.error("Error", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
 		}
-		// ??
 		return numberTimesVehicleInThisParking;
 	}
 

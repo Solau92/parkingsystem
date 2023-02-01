@@ -10,18 +10,53 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ParkingSpotDAO {
-	private static final Logger logger = LogManager.getLogger("ParkingSpotDAOTest");
+	
+	private static final Logger logger = LogManager.getLogger("ParkingSpotDAO");
 
 	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+	/**
+	 * Returns a ParkingSpot object from data base with the information found in the
+	 * base with the parking number given
+	 * 
+	 * @param parkingNumber
+	 * @return a ParkingSpot
+	 * @return null if ?
+	 */
+	public ParkingSpot getParkingSpot(int parkingId) {
+		Connection con = null;
+		ParkingSpot parkingSpot = new ParkingSpot(0, null, false);
+		try {
+			con = dataBaseConfig.getConnection();
+			PreparedStatement ps = con.prepareStatement(DBConstants.GET_PARKING_SPOT);
+			ps.setInt(1, parkingId);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				parkingSpot.setId(rs.getInt(1));
+				parkingSpot.setAvailable(rs.getBoolean(2));
+				parkingSpot.setParkingType(ParkingType.valueOf(rs.getString(3)));
+			}
+			dataBaseConfig.closeResultSet(rs);
+			dataBaseConfig.closePreparedStatement(ps);
+		} catch (Exception ex) {
+			logger.error("Error fetching parking spot", ex);
+		} finally {
+			dataBaseConfig.closeConnection(con);
+		}
+		return parkingSpot;
+	}
+	
 	/**
 	 * Returns the number of an available slot, or -1 if no slot available.
 	 * 
 	 * @param parkingType
 	 * @return -1 if no slot available
 	 * @return the parking number chosen (minimum number)
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
 	public int getNextAvailableSlot(ParkingType parkingType) {
 		Connection con = null;

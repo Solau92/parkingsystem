@@ -57,11 +57,8 @@
 		<!-- -->
 		<!-- -->
 		<!-- -->
-<!--  		<dependency>
-			<groupId>org.apachme.maven.plugins</groupId>
-			<artifactId>maven-assembly-plugin</artifactId>
-			<version>3.4.1</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>org.apachme.maven.plugins</groupId> <artifactId>maven-assembly-plugin</artifactId> 
+			<version>3.4.2</version> </dependency> -->
 		<!-- https://mvnrepository.com/artifact/com.github.spotbugs/spotbugs -->
 		<dependency>
 			<groupId>com.github.spotbugs</groupId>
@@ -69,6 +66,25 @@
 			<version>4.7.3</version>
 			<type>pom</type>
 		</dependency>
+
+
+		<!-- <dependency> <groupId>org.assertj</groupId> <artifactId>assertj-core</artifactId> 
+			<version>3.24.2</version> </dependency> -->
+
+		<!-- Ajouté le 01/02 -->
+		<dependency>
+			<groupId>io.github.hakky54</groupId>
+			<artifactId>logcaptor</artifactId>
+			<version>2.7.10</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.4.5</version>
+		</dependency>
+
+
 
 
 	</dependencies>
@@ -123,29 +139,11 @@
 			<!-- -->
 			<!-- -->
 			<!-- -->
- <!-- 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<archive>
-								<manifest>
-									<mainClass> com.parkit.parkingsystem.App
-									</mainClass>
-								</manifest>
-							</archive>
-							<descriptorRefs>
-								<descriptorRef>executable-jar-with-dependencies</descriptorRef>
-							</descriptorRefs>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin> -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-assembly-plugin</artifactId> 
+				<executions> <execution> <phase>package</phase> <goals> <goal>single</goal> 
+				</goals> <configuration> <archive> <manifest> <mainClass> com.parkit.parkingsystem.App 
+				</mainClass> </manifest> </archive> <descriptorRefs> <descriptorRef>executable-jar-with-dependencies</descriptorRef> 
+				</descriptorRefs> </configuration> </execution> </executions> </plugin> -->
 
 			<!-- Rajouté 24/01 -->
 			<plugin>
@@ -167,7 +165,7 @@
 				</dependencies>
 				<configuration>
 					<excludes>
-						<exclude>**/*IT.java</exclude>
+						<exclude>**/*IT.java</exclude>						
 					</excludes>
 				</configuration>
 				<executions>
@@ -182,7 +180,7 @@
 								<exclude>none</exclude>
 							</excludes>
 							<includes>
-								<include>**/*IT.java</include>
+								<include>**/*IT.java</include>								
 							</includes>
 						</configuration>
 					</execution>
@@ -205,6 +203,9 @@
 							<goal>report</goal>
 						</goals>
 						<configuration>
+							<excludes>
+								<exclude>com/parkit/**/*IT.class</exclude>
+							</excludes>
 							<outputDirectory>${project.build.directory}/jacoco</outputDirectory>
 						</configuration>
 					</execution>
@@ -223,6 +224,11 @@
 				</dependencies>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.4.2</version>
+			</plugin>
 		</plugins>
 	</build>
 </project>
