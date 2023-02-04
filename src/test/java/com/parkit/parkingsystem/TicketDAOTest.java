@@ -348,8 +348,7 @@ public class TicketDAOTest {
 	@Test
 	void numberOfTimesVehicleInDataBase_Error_Test() throws ClassNotFoundException, SQLException {
 
-		//GIVEN
-		
+		//GIVEN		
 		when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeQuery()).thenThrow(new SQLException());

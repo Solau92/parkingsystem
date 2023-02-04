@@ -55,7 +55,6 @@ public class ParkingSpotDAOTest {
 		when(resultSet.next()).thenReturn(true);
 		when(resultSet.getInt(anyInt())).thenReturn(1);
 		when(resultSet.getBoolean(anyInt())).thenReturn(true);
-		//**-**
 		when(resultSet.getString(anyInt())).thenReturn("CAR");
 		
 		//WHEN
@@ -100,8 +99,7 @@ public class ParkingSpotDAOTest {
 
 		//THEN
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(1, logEvents.size());
-		
+		assertEquals(1, logEvents.size());		
         LogEvent logEvent = logEvents.get(0);
 		assertEquals("Error fetching parking spot", logEvent.getMessage());					
 
@@ -133,8 +131,7 @@ public class ParkingSpotDAOTest {
     	when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeQuery()).thenReturn(resultSet);
-		when(resultSet.next()).thenReturn(true);
-		
+		when(resultSet.next()).thenReturn(true);		
 		when(resultSet.getInt(anyInt())).thenReturn(4);
 		
 		//WHEN
@@ -158,8 +155,7 @@ public class ParkingSpotDAOTest {
 		
 		//THEN
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(1, logEvents.size());
-		
+		assertEquals(1, logEvents.size());		
         LogEvent logEvent = logEvents.get(0);
 		assertEquals("Error fetching next available slot", logEvent.getMessage());		
 			
@@ -170,8 +166,7 @@ public class ParkingSpotDAOTest {
     void upDateParking_BikeSucces_Test() throws ClassNotFoundException, SQLException {
 
        	//GIVEN
-    	ParkingSpot parkingSpotToUpdate = new ParkingSpot(4, ParkingType.BIKE, true);
-    	
+    	ParkingSpot parkingSpotToUpdate = new ParkingSpot(4, ParkingType.BIKE, true);    	
     	when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeUpdate()).thenReturn(1);
@@ -188,8 +183,7 @@ public class ParkingSpotDAOTest {
     void upDateParking_BikeFail_Test() throws ClassNotFoundException, SQLException {
 
        	//GIVEN
-    	ParkingSpot parkingSpotToUpdate = new ParkingSpot(4, ParkingType.BIKE, true);
-    	
+    	ParkingSpot parkingSpotToUpdate = new ParkingSpot(4, ParkingType.BIKE, true);    	
     	when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeUpdate()).thenReturn(0);
@@ -206,8 +200,7 @@ public class ParkingSpotDAOTest {
     void upDateParking_CarError_Test() throws ClassNotFoundException, SQLException {
 
        	//GIVEN
-    	ParkingSpot parkingSpotToUpdate = new ParkingSpot(4, ParkingType.BIKE, true);
-    	
+    	ParkingSpot parkingSpotToUpdate = new ParkingSpot(4, ParkingType.BIKE, true);   	
     	when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeUpdate()).thenThrow(new SQLException());
@@ -217,8 +210,7 @@ public class ParkingSpotDAOTest {
     	
 		//THEN
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(1, logEvents.size());
-		
+		assertEquals(1, logEvents.size());		
         LogEvent logEvent = logEvents.get(0);
 		assertEquals("Error updating parking info", logEvent.getMessage());
     	

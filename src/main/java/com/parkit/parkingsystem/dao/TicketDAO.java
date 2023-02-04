@@ -74,7 +74,7 @@ public class TicketDAO {
 		Ticket ticket = null;
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
+			PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET_VEHICLE_IN_PARKING);
 			ps.setString(1, vehicleRegNumber);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
@@ -91,7 +91,7 @@ public class TicketDAO {
 				}							
 				ticket.setFareRate(rs.getDouble(7));
 			} else {
-//				throw new Exception("Ticket not found");
+				throw new Exception("Ticket not found");
 			}
 			dataBaseConfig.closeResultSet(rs);
 			dataBaseConfig.closePreparedStatement(ps);
@@ -104,6 +104,49 @@ public class TicketDAO {
 		return ticket;
 	}
 
+	/**
+	 * Creates a ticket object from date base with the informations found in the
+	 * base with the vehicleRegNumber given
+	 * 
+	 * @param vehicleRegNumber
+	 * @return a ticket
+	 * @return null if ??
+	 */
+	public Ticket getTicketVehicleNotInParking(String vehicleRegNumber) {
+		Connection con = null;
+		Ticket ticket = null;
+		try {
+			con = dataBaseConfig.getConnection();
+			PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET_VEHICLE_OUT_OF_PARKING);
+			ps.setString(1, vehicleRegNumber);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				ticket = new Ticket();
+				ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1), ParkingType.valueOf(rs.getString(6)), false);
+				ticket.setParkingSpot(parkingSpot);
+				ticket.setId(rs.getInt(2));
+				ticket.setVehicleRegNumber(vehicleRegNumber);
+				ticket.setPrice(rs.getDouble(3));
+				ticket.setInTime(rs.getTimestamp(4).toLocalDateTime());
+				// Marche, mais revoir : (rs.setTimestamp(5, (Objects.isNull(ticket.getOutTime()) ? null : (Timestamp.valueOf(ticket.getOutTime().truncatedTo(ChronoUnit.SECONDS)))));
+				if (rs.getTimestamp(5) != null) { // if outTime not null
+					ticket.setOutTime(rs.getTimestamp(5).toLocalDateTime());
+				}							
+				ticket.setFareRate(rs.getDouble(7));
+			} else {
+				throw new Exception("Ticket not found");
+			}
+			dataBaseConfig.closeResultSet(rs);
+			dataBaseConfig.closePreparedStatement(ps);
+
+		} catch (Exception ex) {
+			logger.error("Error fetching the ticket", ex);
+		} finally {
+			dataBaseConfig.closeConnection(con);
+		}
+		return ticket;
+	}
+	
 	/**
 	 * Updates in database the information of a given ticket in database a ticket
 	 * given in parameter.

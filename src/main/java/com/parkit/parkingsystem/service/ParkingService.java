@@ -37,18 +37,20 @@ public class ParkingService {
 	}
 
 	/**
-	 * REVOIR !!!!!! If a parking spot is available and the vehicle is not already
-	 * in parking, updates the status of the parking spot chosen in data base, and
-	 * creates and saves the ticket in date base.
-	 * 
-	 * @throws Exception if vehicle already in parking, no spot available, and if
-	 *                   problem updating parking spot in database
+	 * Calls method processIncomingVehicle(LocalDateTime) with parameter LocalDateTime = null
 	 */
-
 	public void processIncomingVehicle() {
 		processIncomingVehicle(null);
 	}
 
+	/**
+	 * If a parking spot is available and the vehicle is not already
+	 * in parking, updates the status of the parking spot chosen in data base, and
+	 * creates and saves the ticket in date base.
+	 * @param LocalDateTime inTime
+	 * @throws Exception if vehicle already in parking, no spot available, and if
+	 *                   problem updating parking spot in database
+	 */
 	public void processIncomingVehicle(LocalDateTime inTime) {
 		try {
 			ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
@@ -186,17 +188,20 @@ public class ParkingService {
 	}
 
 	/**
-	 * REVOIR !!!!! Gets the ticket in data base and updates it (adding out time),
-	 * calculates the fare and updates the ticket (adding fare), and updates the
-	 * parking spot in data base (available).
-	 * 
-	 * @throws Exception if error (in particular when vehicle not in the parking or
-	 *                   error while searching ticket in database)
+	 * Calls method processExitingVehicle(LocalDateTime) with parameter LocalDateTime = null
 	 */
 	public void processExitingVehicle() {
 		processExitingVehicle(null);
 	}
 
+	/**
+	 * Gets the ticket in data base and updates it (adding out time),
+	 * calculates the fare and updates the ticket (adding fare), and updates the
+	 * parking spot in data base (available).
+	 * @param LocalDateTime outTime
+	 * @throws Exception if error (in particular when vehicle not in the parking or
+	 *                   error while searching ticket in database)
+	 */
 	public void processExitingVehicle(LocalDateTime outTime) {
 		try {
 			String vehicleRegNumber = getVehicleRegNumber();
