@@ -39,180 +39,191 @@ public class ParkingSpotDAOTest {
 	@Mock
 	private static PreparedStatement preparedStatement;
 	@Mock
-	private static ResultSet resultSet;	
-	//@Mock
-	//private static Logger logger;
+	private static ResultSet resultSet;
 
 	LogCaptor logCaptor = LogCaptor.forName("ParkingSpotDAO");
-  
-    @Test
-    void getParkingSpot_Succes_Test() throws ClassNotFoundException, SQLException {
-		
-    	//GIVEN
-    	when(dataBaseConfig.getConnection()).thenReturn(connection);
+
+	@Test
+	void getParkingSpot_CarSucces_Test() throws ClassNotFoundException, SQLException {
+
+		// GIVEN
+		when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeQuery()).thenReturn(resultSet);
 		when(resultSet.next()).thenReturn(true);
 		when(resultSet.getInt(anyInt())).thenReturn(1);
 		when(resultSet.getBoolean(anyInt())).thenReturn(true);
 		when(resultSet.getString(anyInt())).thenReturn("CAR");
-		
-		//WHEN
-		ParkingSpot result = parkingSpotDAO.getParkingSpot(1);
 
-		//THEN
-		assertEquals(1, result.getId());
-		assertEquals(true, result.isAvailable());
-		assertEquals(ParkingType.CAR, result.getParkingType());
+		// WHEN
+		ParkingSpot parkingSpotGet = parkingSpotDAO.getParkingSpot(1);
 
-    }
- 
-    @Test
-    void getParkingSpot_NoResult_Test() throws ClassNotFoundException, SQLException {
-		
-    	//GIVEN
-    	when(dataBaseConfig.getConnection()).thenReturn(connection);
+		// THEN
+		assertEquals(1, parkingSpotGet.getId());
+		assertEquals(true, parkingSpotGet.isAvailable());
+		assertEquals(ParkingType.CAR, parkingSpotGet.getParkingType());
+
+	}
+
+	@Test
+	void getParkingSpot_NoResult_Test() throws ClassNotFoundException, SQLException {
+
+		// GIVEN
+		when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeQuery()).thenReturn(resultSet);
 		when(resultSet.next()).thenReturn(false);
-		
-		//WHEN
-		ParkingSpot result = parkingSpotDAO.getParkingSpot(1);
 
-		//THEN
-		assertEquals(0, result.getId());
-		assertNull(result.getParkingType());
-		assertFalse(result.isAvailable());
+		// WHEN
+		ParkingSpot parkingSpotGet = parkingSpotDAO.getParkingSpot(1);
 
-    }
-  
-    @Test
-    void getParkingSpot_ConnectionError_Test() throws ClassNotFoundException, SQLException {
-		
-    	//GIVEN
-    	when(dataBaseConfig.getConnection()).thenReturn(connection);
+		// THEN
+		assertEquals(0, parkingSpotGet.getId());
+		assertNull(parkingSpotGet.getParkingType());
+		assertFalse(parkingSpotGet.isAvailable());
+
+	}
+
+	@Test
+	void getParkingSpot_ConnectionError_Test() throws ClassNotFoundException, SQLException {
+
+		// GIVEN
+		when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeQuery()).thenThrow(new SQLException());
-				
-		//WHEN
-		parkingSpotDAO.getParkingSpot(1);
 
-		//THEN
+		// WHEN
+		ParkingSpot parkingSpotGet = parkingSpotDAO.getParkingSpot(1);
+
+		// THEN
+		assertEquals(0, parkingSpotGet.getId());
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(1, logEvents.size());		
-        LogEvent logEvent = logEvents.get(0);
-		assertEquals("Error fetching parking spot", logEvent.getMessage());					
+		assertEquals(1, logEvents.size());
+		LogEvent logEvent = logEvents.get(0);
+		assertEquals("Error fetching parking spot", logEvent.getMessage());
 
-    }
-    
-    @Test
-    void getNextAvailableSlot_CarSucces_Test() throws ClassNotFoundException, SQLException {
-				
-    	//GIVEN
-    	when(dataBaseConfig.getConnection()).thenReturn(connection);
+	}
+
+	@Test
+	void getNextAvailableSlot_CarSucces_Test() throws ClassNotFoundException, SQLException {
+
+		// GIVEN
+		when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeQuery()).thenReturn(resultSet);
 		when(resultSet.next()).thenReturn(true);
-		
-		when(resultSet.getInt(anyInt())).thenReturn(1);
-		
-		//WHEN
-		int result = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
 
-		//THEN
-		assertEquals(1, result);
-			
-    }
-    
-    @Test
-    void getNextAvailableSlot_BikeSucces_Test() throws ClassNotFoundException, SQLException {
-				
-    	//GIVEN
-    	when(dataBaseConfig.getConnection()).thenReturn(connection);
+		when(resultSet.getInt(anyInt())).thenReturn(1);
+
+		// WHEN
+		int spotNumber = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
+
+		// THEN
+		assertEquals(1, spotNumber);
+	}
+
+	@Test
+	void getNextAvailableSlot_BikeSucces_Test() throws ClassNotFoundException, SQLException {
+
+		// GIVEN
+		when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeQuery()).thenReturn(resultSet);
-		when(resultSet.next()).thenReturn(true);		
+		when(resultSet.next()).thenReturn(true);
 		when(resultSet.getInt(anyInt())).thenReturn(4);
-		
-		//WHEN
-		int result = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
 
-		//THEN
-		assertEquals(4, result);			
-    }
-    
-    @Test
-    void getNextAvailableSlot_CarNoAvailable_Test() throws ClassNotFoundException, SQLException {
-				
-    	//GIVEN
-    	when(dataBaseConfig.getConnection()).thenReturn(connection);
+		// WHEN
+		int spotNumber = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
+
+		// THEN
+		assertEquals(4, spotNumber);
+	}
+
+	@Test
+	void getNextAvailableSlot_CarNoAvailable_Test() throws ClassNotFoundException, SQLException {
+
+		// GIVEN
+		when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeQuery()).thenReturn(resultSet);
 		when(resultSet.next()).thenThrow(new SQLException());
-		
-		// WHEN
-		parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
-		
-		//THEN
-		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(1, logEvents.size());		
-        LogEvent logEvent = logEvents.get(0);
-		assertEquals("Error fetching next available slot", logEvent.getMessage());		
-			
-    }   
-    
-    
-    @Test
-    void upDateParking_BikeSucces_Test() throws ClassNotFoundException, SQLException {
 
-       	//GIVEN
-    	ParkingSpot parkingSpotToUpdate = new ParkingSpot(4, ParkingType.BIKE, true);    	
-    	when(dataBaseConfig.getConnection()).thenReturn(connection);
+		// WHEN
+		int spotNumber = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
+
+		// THEN
+		assertEquals(-1, spotNumber);
+		List<LogEvent> logEvents = logCaptor.getLogEvents();
+		assertEquals(1, logEvents.size());
+		LogEvent logEvent = logEvents.get(0);
+		assertEquals("Error fetching next available slot", logEvent.getMessage());
+	}
+
+	@Test
+	void getNextAvailableSlot_CarNoResult_Test() throws ClassNotFoundException, SQLException {
+
+		// GIVEN
+		when(dataBaseConfig.getConnection()).thenReturn(connection);
+		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+		when(preparedStatement.executeQuery()).thenReturn(resultSet);
+		when(resultSet.next()).thenReturn(false);
+
+		// WHEN
+		int spotNumber = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
+
+		// THEN
+		assertEquals(-1, spotNumber);
+	}
+
+	@Test
+	void upDateParking_BikeSucces_Test() throws ClassNotFoundException, SQLException {
+
+		// GIVEN
+		ParkingSpot parkingSpotToUpdate = new ParkingSpot(4, ParkingType.BIKE, true);
+		when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeUpdate()).thenReturn(1);
-		
-		//WHEN
-		boolean result = parkingSpotDAO.updateParking(parkingSpotToUpdate);
-    	
-		//THEN
-		assertTrue(result);
-    	
-    }
-    
-    @Test
-    void upDateParking_BikeFail_Test() throws ClassNotFoundException, SQLException {
 
-       	//GIVEN
-    	ParkingSpot parkingSpotToUpdate = new ParkingSpot(4, ParkingType.BIKE, true);    	
-    	when(dataBaseConfig.getConnection()).thenReturn(connection);
+		// WHEN
+		boolean isParkingSpotUpdated = parkingSpotDAO.updateParking(parkingSpotToUpdate);
+
+		// THEN
+		assertTrue(isParkingSpotUpdated);
+	}
+
+	@Test
+	void upDateParking_BikeFail_Test() throws ClassNotFoundException, SQLException {
+
+		// GIVEN
+		ParkingSpot parkingSpotToUpdate = new ParkingSpot(4, ParkingType.BIKE, true);
+		when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeUpdate()).thenReturn(0);
-		
-		//WHEN
-		boolean result = parkingSpotDAO.updateParking(parkingSpotToUpdate);
-    	
-		//THEN
-		assertFalse(result);
-    	
-    }
-   
-    @Test
-    void upDateParking_CarError_Test() throws ClassNotFoundException, SQLException {
 
-       	//GIVEN
-    	ParkingSpot parkingSpotToUpdate = new ParkingSpot(4, ParkingType.BIKE, true);   	
-    	when(dataBaseConfig.getConnection()).thenReturn(connection);
+		// WHEN
+		boolean isParkingSpotUpdated = parkingSpotDAO.updateParking(parkingSpotToUpdate);
+
+		// THEN
+		assertFalse(isParkingSpotUpdated);
+	}
+
+	@Test
+	void upDateParking_CarError_Test() throws ClassNotFoundException, SQLException {
+
+		// GIVEN
+		ParkingSpot parkingSpotToUpdate = new ParkingSpot(4, ParkingType.BIKE, true);
+		when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeUpdate()).thenThrow(new SQLException());
-		
-		//WHEN
-		parkingSpotDAO.updateParking(parkingSpotToUpdate);
-    	
-		//THEN
+
+		// WHEN
+		boolean isParkingSpotUpdated = parkingSpotDAO.updateParking(parkingSpotToUpdate);
+
+		// THEN
+		assertFalse(isParkingSpotUpdated);
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(1, logEvents.size());		
-        LogEvent logEvent = logEvents.get(0);
+		assertEquals(1, logEvents.size());
+		LogEvent logEvent = logEvents.get(0);
 		assertEquals("Error updating parking info", logEvent.getMessage());
-    	
-    }
+	}
 }

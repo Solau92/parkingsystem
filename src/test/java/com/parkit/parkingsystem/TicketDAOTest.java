@@ -46,13 +46,13 @@ public class TicketDAOTest {
 	LogCaptor logCaptor = LogCaptor.forName("TicketDAO");
 
 	@Test
-	void saveTicket_Succes_Test() throws SQLException, ClassNotFoundException {
+	void saveTicket_CarSucces_Test() throws SQLException, ClassNotFoundException {
 		
 		//GIVEN
 		Ticket ticketToSave = new Ticket();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
 		ticketToSave.setParkingSpot(parkingSpot);
-		ticketToSave.setVehicleRegNumber("TOTO");
+		ticketToSave.setVehicleRegNumber("WXYZ");
 		ticketToSave.setPrice(2D);
 		ticketToSave.setInTime(LocalDateTime.now().minusMinutes(15L));
 		ticketToSave.setOutTime(LocalDateTime.now().plusMinutes(5L));
@@ -62,20 +62,20 @@ public class TicketDAOTest {
 		when(preparedStatement.execute()).thenReturn(true);
 		
 		//WHEN
-		boolean result = ticketDAO.saveTicket(ticketToSave);
+		boolean isTicketSaved = ticketDAO.saveTicket(ticketToSave);
 		
 		//THEN
-		assertTrue(result);
+		assertTrue(isTicketSaved);
 	}
 
 	@Test
-	void saveTicket_outTimeNull_Test() throws SQLException, ClassNotFoundException {
+	void saveTicket_CarOutTimeNull_Test() throws SQLException, ClassNotFoundException {
 		
 		//GIVEN
 		Ticket ticketToSave = new Ticket();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
 		ticketToSave.setParkingSpot(parkingSpot);
-		ticketToSave.setVehicleRegNumber("TOTO");
+		ticketToSave.setVehicleRegNumber("WXYZ");
 		ticketToSave.setPrice(2D);
 		ticketToSave.setInTime(LocalDateTime.now().minusMinutes(15L));
 		ticketToSave.setOutTime(null);
@@ -85,20 +85,20 @@ public class TicketDAOTest {
 		when(preparedStatement.execute()).thenReturn(true);
 		
 		//WHEN
-		boolean result = ticketDAO.saveTicket(ticketToSave);
+		boolean isTicketSaved = ticketDAO.saveTicket(ticketToSave);
 		
 		//THEN
-		assertTrue(result);
+		assertTrue(isTicketSaved);
 	}
 	
 	@Test
-	void saveTicket_Error_Test() throws SQLException, ClassNotFoundException {
+	void saveTicket_BikeError_Test() throws SQLException, ClassNotFoundException {
 		
 		//GIVEN
 		Ticket ticketToSave = new Ticket();
 		ParkingSpot parkingSpot = new ParkingSpot(4, ParkingType.BIKE, true);
 		ticketToSave.setParkingSpot(parkingSpot);
-		ticketToSave.setVehicleRegNumber("TOTO");
+		ticketToSave.setVehicleRegNumber("WXYZ");
 		ticketToSave.setPrice(2D);
 		ticketToSave.setInTime(LocalDateTime.now().minusMinutes(15L));
 		ticketToSave.setOutTime(LocalDateTime.now().plusMinutes(5L));
@@ -111,21 +111,19 @@ public class TicketDAOTest {
 		
 		//THEN
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(1, logEvents.size());
-		
+		assertEquals(1, logEvents.size());		
         LogEvent logEvent = logEvents.get(0);
 		assertEquals("Error connection ?", logEvent.getMessage());
-
 	}
 		
 	@Test
-	void updateTicket_Succes_Test() throws SQLException, ClassNotFoundException {
+	void updateTicket_CarSucces_Test() throws SQLException, ClassNotFoundException {
 		
 		//GIVEN
 		Ticket ticketToSave = new Ticket();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
 		ticketToSave.setParkingSpot(parkingSpot);
-		ticketToSave.setVehicleRegNumber("TOTO");
+		ticketToSave.setVehicleRegNumber("WXYZ");
 		ticketToSave.setPrice(2D);
 		ticketToSave.setInTime(LocalDateTime.now().minusMinutes(15L));
 		ticketToSave.setOutTime(LocalDateTime.now().plusMinutes(5L));
@@ -135,20 +133,20 @@ public class TicketDAOTest {
 		when(preparedStatement.execute()).thenReturn(true);
 		
 		//WHEN
-		Boolean result = ticketDAO.updateTicket(ticketToSave);
+		boolean isTicketUpdated = ticketDAO.updateTicket(ticketToSave);
 		
 		//THEN
-		assertTrue(result);
+		assertTrue(isTicketUpdated);
 	}
 
 	@Test
-	void updateTicket_Error_Test() throws SQLException, ClassNotFoundException {
+	void updateTicket_CarError_Test() throws SQLException, ClassNotFoundException {
 		
 		//GIVEN
 		Ticket ticketToSave = new Ticket();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
 		ticketToSave.setParkingSpot(parkingSpot);
-		ticketToSave.setVehicleRegNumber("TOTO");
+		ticketToSave.setVehicleRegNumber("WXYZ");
 		ticketToSave.setPrice(2D);
 		ticketToSave.setInTime(LocalDateTime.now().minusMinutes(15L));
 		ticketToSave.setOutTime(LocalDateTime.now().plusMinutes(5L));
@@ -157,41 +155,18 @@ public class TicketDAOTest {
 		when(dataBaseConfig.getConnection()).thenThrow(new SQLException());
 		
 		//WHEN
-		Boolean result = ticketDAO.updateTicket(ticketToSave);
+		boolean isTicketUpdated = ticketDAO.updateTicket(ticketToSave);
 		
 		//THEN
+		assertFalse(isTicketUpdated);
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(1, logEvents.size());
-		
+		assertEquals(1, logEvents.size());		
         LogEvent logEvent = logEvents.get(0);
 		assertEquals("Error saving ticket info", logEvent.getMessage());
 	}
-//	@Test
-//	void updateTicketErrorTest() throws SQLException, ClassNotFoundException {
-//		
-//		//GIVEN
-//		Ticket ticketToSave = new Ticket();
-//		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
-//		ticketToSave.setParkingSpot(parkingSpot);
-//		ticketToSave.setVehicleRegNumber("TOTO");
-//		ticketToSave.setPrice(2D);
-//		ticketToSave.setInTime(LocalDateTime.now().minusMinutes(15L));
-//		ticketToSave.setOutTime(LocalDateTime.now().plusMinutes(5L));
-//		ticketToSave.setFareRate(1D);
-//		
-//		when(dataBaseConfig.getConnection()).thenThrow(new SQLException());
-//		
-//		//WHEN
-//		Boolean result = ticketDAO.updateTicket(ticketToSave);
-//		
-//		//THEN
-//		assertFalse(result);
-//	}
-//
 	
-	// **-**
 	@Test
-	void getTicket_SuccesOutTimeNotNull_Test() throws SQLException, ClassNotFoundException {
+	void getTicket_CarSuccesOutTimeNotNull_Test() throws SQLException, ClassNotFoundException {
 		
 		//GIVEN
 		when(dataBaseConfig.getConnection()).thenReturn(connection);
@@ -202,21 +177,19 @@ public class TicketDAOTest {
 		when(resultSet.getInt(anyInt())).thenReturn(1);
 		when(resultSet.getInt(anyInt())).thenReturn(1);
 		when(resultSet.getDouble(anyInt())).thenReturn(3.14);
-		// ?? **-** Rajout Time // Mais comment faire in et out différents ?
 		when(resultSet.getTimestamp(anyInt())).thenReturn(new Timestamp(0));
 		
 		//WHEN
-		Ticket ticketGetTicket = ticketDAO.getTicket("TOTO");
+		Ticket ticketGetTicket = ticketDAO.getTicket("WXYZ");
 				
 		//THEN
 		assertEquals(1, ticketGetTicket.getId());
-		assertEquals("TOTO", ticketGetTicket.getVehicleRegNumber());
+		assertEquals("WXYZ", ticketGetTicket.getVehicleRegNumber());
 		assertEquals(3.14, ticketGetTicket.getPrice());
 	}
 
-	// **-**
 	@Test
-	void getTicket_SuccesOutTimeNull_Test() throws SQLException, ClassNotFoundException {
+	void getTicket_CarSuccesOutTimeNull_Test() throws SQLException, ClassNotFoundException {
 		
 		//GIVEN
 		when(dataBaseConfig.getConnection()).thenReturn(connection);
@@ -227,23 +200,82 @@ public class TicketDAOTest {
 		when(resultSet.getInt(anyInt())).thenReturn(1);
 		when(resultSet.getInt(anyInt())).thenReturn(1);
 		when(resultSet.getDouble(anyInt())).thenReturn(3.14);
-		// ??
 		when(resultSet.getTimestamp(anyInt())).thenReturn(null);
 		
 		//WHEN
-		Ticket ticketGetTicket = ticketDAO.getTicket("TOTO");
+		Ticket ticketGetTicket = ticketDAO.getTicket("WXYZ");
 				
 		//THEN
 		assertEquals(1, ticketGetTicket.getId());
-		assertEquals("TOTO", ticketGetTicket.getVehicleRegNumber());
+		assertEquals("WXYZ", ticketGetTicket.getVehicleRegNumber());
 		assertEquals(3.14, ticketGetTicket.getPrice());
+	}
+
+	@Test
+	void getTicket_Error_Test() throws SQLException, ClassNotFoundException {
+		
+		//GIVEN
+		when(dataBaseConfig.getConnection()).thenReturn(connection);
+		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+		when(preparedStatement.executeQuery()).thenReturn(resultSet);
+		when(resultSet.next()).thenReturn(false);
+		
+		//WHEN
+		ticketDAO.getTicket("WXYZ");
+				
+		//THEN
+		List<LogEvent> logEvents = logCaptor.getLogEvents();
+		assertEquals(1, logEvents.size());
+        LogEvent logEvent = logEvents.get(0);
+		assertEquals("Error fetching the ticket", logEvent.getMessage());
 	}
 	
 	@Test
-	void isVehicleAlreadyInParkingInDataBase_Yes_Test() throws ClassNotFoundException, SQLException {
+	void getTicketVehicleNotInParking_CarSuccesOutTimeNotNull_Test() throws SQLException, ClassNotFoundException {
+		
+		//GIVEN
+		when(dataBaseConfig.getConnection()).thenReturn(connection);
+		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+		when(preparedStatement.executeQuery()).thenReturn(resultSet);
+		when(resultSet.next()).thenReturn(true);
+		when(resultSet.getString(anyInt())).thenReturn("CAR");
+		when(resultSet.getInt(anyInt())).thenReturn(1);
+		when(resultSet.getInt(anyInt())).thenReturn(1);
+		when(resultSet.getDouble(anyInt())).thenReturn(3.14);
+		when(resultSet.getTimestamp(anyInt())).thenReturn(new Timestamp(0));
+		
+		//WHEN
+		Ticket ticketGetTicket = ticketDAO.getTicketVehicleNotInParking("WXYZ");
+				
+		//THEN
+		assertEquals(1, ticketGetTicket.getId());
+		assertEquals("WXYZ", ticketGetTicket.getVehicleRegNumber());
+		assertEquals(3.14, ticketGetTicket.getPrice());
+	}
+
+	@Test
+	void getTicketVehicleNotInParking_Error_Test() throws SQLException, ClassNotFoundException {
+		
+		//GIVEN
+		when(dataBaseConfig.getConnection()).thenReturn(connection);
+		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+		when(preparedStatement.executeQuery()).thenReturn(resultSet);
+		when(resultSet.next()).thenReturn(false);
+		
+		//WHEN
+		ticketDAO.getTicketVehicleNotInParking("WXYZ");
+				
+		//THEN
+		List<LogEvent> logEvents = logCaptor.getLogEvents();
+		assertEquals(1, logEvents.size());		
+        LogEvent logEvent = logEvents.get(0);
+		assertEquals("Error fetching the ticket", logEvent.getMessage());
+	}	
+
+	@Test
+	void isVehicleAlreadyInParkingInDataBase_No_Test() throws ClassNotFoundException, SQLException {
 
 		//GIVEN
-		
 		when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeQuery()).thenReturn(resultSet);
@@ -251,27 +283,27 @@ public class TicketDAOTest {
 		when(resultSet.getInt(1)).thenReturn(0);
 		
 		//WHEN
-		boolean result = ticketDAO.isVehicleAlreadyInParkingInDataBase("ABCDEF");
+		boolean isVehicleIsInParking = ticketDAO.isVehicleAlreadyInParkingInDataBase("WXYZ");
 		
 		//THEN
-		assertFalse(result);
+		assertFalse(isVehicleIsInParking);
 	}
 
 	@Test
-	void isVehicleAlreadyInParkingInDataBase_No_Test() throws ClassNotFoundException, SQLException {
+	void isVehicleAlreadyInParkingInDataBase_Yes_Test() throws ClassNotFoundException, SQLException {
 
 		//GIVEN
-		
 		when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeQuery()).thenReturn(resultSet);
-		when(resultSet.next()).thenReturn(false);
-		
+		when(resultSet.next()).thenReturn(true);
+		when(resultSet.getInt(1)).thenReturn(1);
+
 		//WHEN
-		boolean result = ticketDAO.isVehicleAlreadyInParkingInDataBase("AAAAAA");
+		boolean isVehicleIsInParking = ticketDAO.isVehicleAlreadyInParkingInDataBase("WXYZ");
 		
 		//THEN
-		assertTrue(result);
+		assertTrue(isVehicleIsInParking);
 	}
 	
 	@Test
@@ -285,17 +317,32 @@ public class TicketDAOTest {
 		when(resultSet.getInt(1)).thenReturn(2);
 				
 		//WHEN
-		boolean result = ticketDAO.isVehicleAlreadyInParkingInDataBase("AAAAAA");
+		boolean isVehicleAlreadyInParking = ticketDAO.isVehicleAlreadyInParkingInDataBase("WXYZ");
 		
 		//THEN
-		assertTrue(result);
+		assertTrue(isVehicleAlreadyInParking);
+	}
+
+	@Test
+	void isVehicleAlreadyInParkingInDataBase_SQLNoResult_Test() throws ClassNotFoundException, SQLException {
+
+		//GIVEN
+		when(dataBaseConfig.getConnection()).thenReturn(connection);
+		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+		when(preparedStatement.executeQuery()).thenReturn(resultSet);
+		when(resultSet.next()).thenReturn(false);
+				
+		//WHEN
+		boolean isVehicleAlreadyInParking = ticketDAO.isVehicleAlreadyInParkingInDataBase("WXYZ");
+		
+		//THEN
+		assertTrue(isVehicleAlreadyInParking);
 	}
 	
 	@Test
 	void isVehicleAlreadyInParkingInDataBase_ConnectionError_Test() throws ClassNotFoundException, SQLException {
 
-		//GIVEN
-		
+		//GIVEN		
 		when(dataBaseConfig.getConnection()).thenReturn(null);
 		
 		//WHEN
@@ -303,18 +350,15 @@ public class TicketDAOTest {
 		
 		//THEN
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(1, logEvents.size());
-		
+		assertEquals(1, logEvents.size());		
         LogEvent logEvent = logEvents.get(0);
-		assertEquals("Error connection", logEvent.getMessage());
-	
+		assertEquals("Error connection", logEvent.getMessage());	
 	}
 	
 	@Test
 	void numberOfTimesVehicleInDataBase_OneOrMore_Test() throws ClassNotFoundException, SQLException {
 
-		//GIVEN
-		
+		//GIVEN		
 		when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeQuery()).thenReturn(resultSet);
@@ -322,27 +366,26 @@ public class TicketDAOTest {
 		when(resultSet.getInt(1)).thenReturn(3);
 		
 		//WHEN
-		int result = ticketDAO.numberOfTimesVehicleInDataBase("ABCDEF");
+		int numberOfTimes = ticketDAO.numberOfTimesVehicleInDataBase("WXYZ");
 		
 		//THEN
-		assertEquals(3, result);
+		assertEquals(3, numberOfTimes);
 	}
 	
 	@Test
 	void numberOfTimesVehicleInDataBase_Zero_Test() throws ClassNotFoundException, SQLException {
 
-		//GIVEN
-		
+		//GIVEN		
 		when(dataBaseConfig.getConnection()).thenReturn(connection);
 		when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 		when(preparedStatement.executeQuery()).thenReturn(resultSet);
 		when(resultSet.next()).thenReturn(false);
 		
 		//WHEN
-		int result = ticketDAO.numberOfTimesVehicleInDataBase("ABCDEF");
+		int numberOfTimes = ticketDAO.numberOfTimesVehicleInDataBase("WXYZ");
 		
 		//THEN
-		assertEquals(0, result);
+		assertEquals(0, numberOfTimes);
 	}
 
 	@Test
@@ -354,12 +397,11 @@ public class TicketDAOTest {
 		when(preparedStatement.executeQuery()).thenThrow(new SQLException());
 		
 		//WHEN
-		ticketDAO.numberOfTimesVehicleInDataBase("ABCDEF");
+		ticketDAO.numberOfTimesVehicleInDataBase("WXYZ");
 		
 		//THEN
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(1, logEvents.size());
-		
+		assertEquals(1, logEvents.size());		
         LogEvent logEvent = logEvents.get(0);
 		assertEquals("Error", logEvent.getMessage());
 	}

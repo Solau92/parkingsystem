@@ -11,7 +11,7 @@ public class FareCalculatorService {
 	 * Calculates the fare of a given ticket and set the price of this ticket.
 	 * @param ticket
 	 * @throws IllegalArgumentException if ticket out time null or ticket out time is before ticket in time
-	 * @throws IllegalArgumentException if the type of parking is unknown 
+	 * @throws IllegalArgumentException if the type of parking is unknown
 	 */
 	public void calculateFare(Ticket ticket) {
 
@@ -39,4 +39,4 @@ public class FareCalculatorService {
 		}
 	}
 
-} 
+}

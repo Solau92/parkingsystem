@@ -24,12 +24,12 @@ public class TicketDAO {
 
 	/**
 	 * Save in database a ticket given in parameter.
-	 * 
 	 * @param ticket
-	 * @return true if the SQL statement execution was ok (means that the first
-	 *         result is a ResultSet object)
-	 * @return false otherwise (if the first result of the SQL query is an update
-	 *         count or there is no result) or there was an error fetching the next available slot
+	 * @return true if the SQL statement execution was ok (means that the
+	 * first result is a ResultSet object)
+	 * @return false otherwise (if the first result of the SQL query is an
+	 * update count or there is no result) or there was an error fetching
+	 * the next available slot
 	 */
 	public boolean saveTicket(Ticket ticket) {
 		Connection con = null;
@@ -49,25 +49,18 @@ public class TicketDAO {
 			logger.error("Error connection ?", ex);
 		} 
 		finally {
-			if (ps != null) {
-				try {
-					ps.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
+			dataBaseConfig.closePreparedStatement(ps);
 			dataBaseConfig.closeConnection(con);
 		}
 		return false;
 	}
 
 	/**
-	 * Creates a ticket object from date base with the informations found in the
-	 * base with the vehicleRegNumber given
-	 * 
+	 * Creates a ticket object from date base with the informations found
+	 * in the base with the vehicleRegNumber given.
 	 * @param vehicleRegNumber
 	 * @return a ticket
-	 * @return null if ??
+	 * @return null if no result found in database
 	 */
 	public Ticket getTicket(String vehicleRegNumber) {
 		Connection con = null;
@@ -85,10 +78,7 @@ public class TicketDAO {
 				ticket.setVehicleRegNumber(vehicleRegNumber);
 				ticket.setPrice(rs.getDouble(3));
 				ticket.setInTime(rs.getTimestamp(4).toLocalDateTime());
-				// Marche, mais revoir : (rs.setTimestamp(5, (Objects.isNull(ticket.getOutTime()) ? null : (Timestamp.valueOf(ticket.getOutTime().truncatedTo(ChronoUnit.SECONDS)))));
-				if (rs.getTimestamp(5) != null) { // if outTime not null
-					ticket.setOutTime(rs.getTimestamp(5).toLocalDateTime());
-				}							
+				ticket.setOutTime(Objects.isNull(ticket.getOutTime()) ? null : rs.getTimestamp(5).toLocalDateTime());
 				ticket.setFareRate(rs.getDouble(7));
 			} else {
 				throw new Exception("Ticket not found");
@@ -106,11 +96,10 @@ public class TicketDAO {
 
 	/**
 	 * Creates a ticket object from date base with the informations found in the
-	 * base with the vehicleRegNumber given
-	 * 
+	 * base with the vehicleRegNumber given.
 	 * @param vehicleRegNumber
 	 * @return a ticket
-	 * @return null if ??
+	 * @return null if no result found in database
 	 */
 	public Ticket getTicketVehicleNotInParking(String vehicleRegNumber) {
 		Connection con = null;
@@ -128,10 +117,7 @@ public class TicketDAO {
 				ticket.setVehicleRegNumber(vehicleRegNumber);
 				ticket.setPrice(rs.getDouble(3));
 				ticket.setInTime(rs.getTimestamp(4).toLocalDateTime());
-				// Marche, mais revoir : (rs.setTimestamp(5, (Objects.isNull(ticket.getOutTime()) ? null : (Timestamp.valueOf(ticket.getOutTime().truncatedTo(ChronoUnit.SECONDS)))));
-				if (rs.getTimestamp(5) != null) { // if outTime not null
-					ticket.setOutTime(rs.getTimestamp(5).toLocalDateTime());
-				}							
+				ticket.setOutTime(rs.getTimestamp(5).toLocalDateTime());						
 				ticket.setFareRate(rs.getDouble(7));
 			} else {
 				throw new Exception("Ticket not found");
@@ -150,7 +136,6 @@ public class TicketDAO {
 	/**
 	 * Updates in database the information of a given ticket in database a ticket
 	 * given in parameter.
-	 * 
 	 * @param ticket
 	 * @return true if the SQL statement execution was ok
 	 * @return false if error saving ticket info 
@@ -169,21 +154,14 @@ public class TicketDAO {
 		} catch (Exception ex) {
 			logger.error("Error saving ticket info", ex);
 		} finally {
-			if (ps != null) {
-				try {
-					ps.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
+			dataBaseConfig.closePreparedStatement(ps);
 			dataBaseConfig.closeConnection(con);
 		}
 		return false;
 	}
 
 	/**
-	 * Searches in data base if a vehicle is already in parking, given is regNumber
-	 * 
+	 * Searches in data base if a vehicle is already in parking, given is regNumber.
 	 * @param vehicleRegNumber
 	 * @return true if the vehicle is in parking (which means that a went in but not
 	 *         already out)
@@ -192,34 +170,32 @@ public class TicketDAO {
 	public boolean isVehicleAlreadyInParkingInDataBase(String vehicleRegNumber) {
 
 		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.CHECK_CAR_ALREADY_IN_PARKING);
+			ps = con.prepareStatement(DBConstants.CHECK_CAR_ALREADY_IN_PARKING);
 			ps.setString(1, vehicleRegNumber);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 
 			if (rs.next()) {
-				
 				return rs.getInt(1) != 0;
-//				if (rs.getInt(1) == 0) {
-//					return false;
-//				}
-//				return true;
 			}
-			dataBaseConfig.closeResultSet(rs);
-			dataBaseConfig.closePreparedStatement(ps);
+
 		} catch (Exception ex) {
 			logger.error("Error connection", ex);
 		} finally {
+			dataBaseConfig.closeResultSet(rs);
+			dataBaseConfig.closePreparedStatement(ps);
 			dataBaseConfig.closeConnection(con);
 		}
 		return true;
 	}
 
 	/**
-	 * Searches in data base how many times the vehicle has already parked in
-	 * parking, given is regNumber
-	 * 
+	 * Searches in data base how many times the vehicle has already parked
+	 * in parking, given is regNumber
 	 * @param vehicleRegNumber
 	 * @return the number of times (0 if never)
 	 */

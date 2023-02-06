@@ -30,7 +30,7 @@ public class ParkingService {
 	}
 
 	/**
-	 * Sets the logger
+	 * Sets the logger.
 	 */
 	public void setLogger(Logger logger) {
 		this.logger = logger;
@@ -106,7 +106,6 @@ public class ParkingService {
 
 	/**
 	 * Returns the vehicle regNumber.
-	 * 
 	 * @return the vehicle regNumer written by the user
 	 * @throws Exception
 	 */
@@ -117,7 +116,6 @@ public class ParkingService {
 
 	/**
 	 * Returns true or false whether the vehicle is or not in the parking
-	 * 
 	 * @param vehicleRegNumber
 	 * @return true if the vehicle is already in parking, false if it is not (never
 	 *         been there, or already out)
@@ -128,7 +126,6 @@ public class ParkingService {
 
 	/**
 	 * Returns the number of times the vehicle parked in parking before
-	 * 
 	 * @param vehicleRegNumber
 	 * @return the number of times the vehicle parked in parking (0 if never)
 	 */
@@ -138,9 +135,8 @@ public class ParkingService {
 
 	/**
 	 * Returns the parking spot chosen if one is available.
-	 * 
 	 * @return a parking spot
-	 * @throws Exception                if no parking spot is available
+	 * @throws Exception if no parking spot is available
 	 * @throws IllegalArgumentException if problem of input
 	 */
 	private ParkingSpot getNextParkingNumberIfAvailable() {
@@ -164,7 +160,6 @@ public class ParkingService {
 
 	/**
 	 * Returns the parking type.
-	 * 
 	 * @return the parking type
 	 * @throws IllegalArgumentException if the input is incorrect
 	 */
@@ -196,11 +191,11 @@ public class ParkingService {
 
 	/**
 	 * Gets the ticket in data base and updates it (adding out time),
-	 * calculates the fare and updates the ticket (adding fare), and updates the
-	 * parking spot in data base (available).
-	 * @param LocalDateTime outTime
-	 * @throws Exception if error (in particular when vehicle not in the parking or
-	 *                   error while searching ticket in database)
+	 * calculates the fare and updates the ticket (adding fare), and
+	 * updates the parking spot in data base (available).
+	 * @param outTime
+	 * @throws Exception if error (in particular when vehicle not in the
+	 * parking or error while searching ticket in database)
 	 */
 	public void processExitingVehicle(LocalDateTime outTime) {
 		try {

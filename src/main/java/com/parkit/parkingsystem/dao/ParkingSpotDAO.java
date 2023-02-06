@@ -21,10 +21,8 @@ public class ParkingSpotDAO {
 	/**
 	 * Returns a ParkingSpot object from data base with the information found in the
 	 * base with the parking number given
-	 * 
 	 * @param parkingNumber
 	 * @return a ParkingSpot
-	 * @return null if ?
 	 */
 	public ParkingSpot getParkingSpot(int parkingId) {
 		Connection con = null;
@@ -48,10 +46,9 @@ public class ParkingSpotDAO {
 		}
 		return parkingSpot;
 	}
-	
+
 	/**
 	 * Returns the number of an available slot, or -1 if no slot available.
-	 * 
 	 * @param parkingType
 	 * @return -1 if no slot available
 	 * @return the parking number chosen (minimum number)
@@ -82,7 +79,6 @@ public class ParkingSpotDAO {
 	/**
 	 * Updates in database the availability of a given parking spot given in
 	 * parameter.
-	 * 
 	 * @param parkingSpot
 	 * @return true if one row was updated, false otherwise
 	 */
