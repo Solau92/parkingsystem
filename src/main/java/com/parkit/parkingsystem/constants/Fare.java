@@ -2,7 +2,6 @@ package com.parkit.parkingsystem.constants;
 
 /**
  * Contains the rates for different vehicles (bike and car)
- *
  */
 public class Fare {
     public static final double BIKE_RATE_PER_HOUR = 1.0;

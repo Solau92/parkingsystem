@@ -1,6 +1,6 @@
 # !!
-I changed the database structure and add a attribute (named "Fare_Rate") corresponding to 
-the percentage paid (1 for a new user, and 0.95 for a recurrent user).
+I changed the database structure and add an attribute (named "Fare_Rate") corresponding to 
+the percentage paid (100% (1) for a new user, and 95% (0.95) for a recurrent user).
 
 # Parking System
 A command line app for managing the parking system. 

@@ -46,7 +46,7 @@ public class ParkingSpotDAOTest {
 	// *********************//
 	// Tests getParkingSpot //
 	// *********************//
-	
+
 	@Test
 	void getParkingSpot_CarSucces_Test() throws ClassNotFoundException, SQLException {
 
@@ -110,7 +110,7 @@ public class ParkingSpotDAOTest {
 	// ***************************//
 	// Tests getNextAvailableSlot //
 	// ***************************//
-	
+
 	@Test
 	void getNextAvailableSpot_CarSucces_Test() throws ClassNotFoundException, SQLException {
 
@@ -185,7 +185,7 @@ public class ParkingSpotDAOTest {
 	// *********************//
 	// Tests updDateParking //
 	// *********************//
-	
+
 	@Test
 	void upDateParking_BikeSucces_Test() throws ClassNotFoundException, SQLException {
 

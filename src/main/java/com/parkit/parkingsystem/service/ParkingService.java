@@ -1,5 +1,5 @@
 package com.parkit.parkingsystem.service;
-   
+
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.constants.Rate;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;

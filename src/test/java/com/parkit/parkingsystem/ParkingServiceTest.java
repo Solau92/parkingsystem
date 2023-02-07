@@ -47,9 +47,8 @@ public class ParkingServiceTest {
 
 	@Captor
 	ArgumentCaptor<ParkingSpot> parkingSpotCaptor;
-	
-	LogCaptor logCaptor = LogCaptor.forName("ParkingService");
 
+	LogCaptor logCaptor = LogCaptor.forName("ParkingService");
 
 	// *****************************//
 	// Tests processIncomingVehicle //
@@ -111,12 +110,12 @@ public class ParkingServiceTest {
 		// THEN
 		verify(parkingSpotDAO, Mockito.times(0)).updateParking(any(ParkingSpot.class));
 		verify(ticketDAO, times(0)).saveTicket(ticketCaptor.capture());
-		
+
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(2, logEvents.size());		
-        LogEvent logEvent = logEvents.get(0);
+		assertEquals(2, logEvents.size());
+		LogEvent logEvent = logEvents.get(0);
 		assertEquals("Error fetching next available parking slot", logEvent.getMessage());
-        logEvent = logEvents.get(1);
+		logEvent = logEvents.get(1);
 		assertEquals("Unable to process incoming vehicle", logEvent.getMessage());
 	}
 
@@ -136,13 +135,12 @@ public class ParkingServiceTest {
 		// THEN
 		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
 		verify(ticketDAO, times(0)).saveTicket(ticketCaptor.capture());
-		
+
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(1, logEvents.size());		
-        LogEvent logEvent = logEvents.get(0);
+		assertEquals(1, logEvents.size());
+		LogEvent logEvent = logEvents.get(0);
 		assertEquals("Unable to process incoming vehicle", logEvent.getMessage());
 	}
-
 
 	@Test
 	void processIncomingVehicle_WrongVehicleTypeInput_Test() {
@@ -157,17 +155,16 @@ public class ParkingServiceTest {
 		// THEN
 		verify(parkingSpotDAO, Mockito.times(0)).updateParking(any(ParkingSpot.class));
 		verify(ticketDAO, times(0)).saveTicket(ticketCaptor.capture());
-		
+
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(2, logEvents.size());		
-        LogEvent logEvent = logEvents.get(0);
+		assertEquals(2, logEvents.size());
+		LogEvent logEvent = logEvents.get(0);
 		assertEquals("Error parsing user input for type of vehicle", logEvent.getMessage());
-        logEvent = logEvents.get(1);
+		logEvent = logEvents.get(1);
 		assertEquals("Unable to process incoming vehicle", logEvent.getMessage());
-		
+
 	}
-	
-	
+
 	@Test
 	void processIncomingVehicle_CarVehicleAlreadyInParking_Test() throws Exception {
 
@@ -186,12 +183,11 @@ public class ParkingServiceTest {
 		verify(ticketDAO, times(0)).saveTicket(ticketCaptor.capture());
 
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(1, logEvents.size());		
-        LogEvent logEvent = logEvents.get(0);
+		assertEquals(1, logEvents.size());
+		LogEvent logEvent = logEvents.get(0);
 		assertEquals("Unable to process incoming vehicle", logEvent.getMessage());
 	}
- 
-	
+
 	@Test
 	void processIncomingVehicle_BikeVehicleAlreadyParkedInParkingBefore_Test() throws Exception {
 
@@ -211,9 +207,9 @@ public class ParkingServiceTest {
 		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
 		verify(ticketDAO, times(1)).saveTicket(ticketCaptor.capture());
 		Ticket ticketSaved = ticketCaptor.getValue();
-		assertEquals(Rate.RECURRENT_USER, ticketSaved.getFareRate());	}
+		assertEquals(Rate.RECURRENT_USER, ticketSaved.getFareRate());
+	}
 
-	
 	@Test
 	void processIncomingVehicle_BikeVehicleNeverParkedInParkingBefore_Test() throws Exception {
 
@@ -246,14 +242,14 @@ public class ParkingServiceTest {
 		// GIVEN
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-		
+
 		Ticket ticket = new Ticket();
 		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
 		ticket.setInTime(inTime);
 		ticket.setParkingSpot(parkingSpot);
 		ticket.setVehicleRegNumber("ABCDEF");
 		ticket.setFareRate(1.0);
-		
+
 		when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
 		when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
 		when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
@@ -272,7 +268,6 @@ public class ParkingServiceTest {
 		assertNotNull(ticketUpdated.getOutTime());
 	}
 
-	
 	@Test
 	void processExitingVehicle_TicketNull_Test() throws Exception {
 
@@ -287,14 +282,13 @@ public class ParkingServiceTest {
 		// THEN
 		verify(parkingSpotDAO, Mockito.times(0)).updateParking(parkingSpotCaptor.capture());
 		verify(ticketDAO, Mockito.times(0)).updateTicket(ticketCaptor.capture());
-		
+
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(1, logEvents.size());		
-        LogEvent logEvent = logEvents.get(0);
+		assertEquals(1, logEvents.size());
+		LogEvent logEvent = logEvents.get(0);
 		assertEquals("Unable to process exiting vehicle", logEvent.getMessage());
 	}
 
-	
 	@Test
 	void processExitingVehicle_BikePbUpdateTicket_Test() throws Exception {
 
@@ -318,10 +312,10 @@ public class ParkingServiceTest {
 		// THEN
 		verify(parkingSpotDAO, Mockito.times(0)).updateParking(parkingSpotCaptor.capture());
 		verify(ticketDAO, Mockito.times(1)).updateTicket(ticketCaptor.capture());
-		
+
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
-		assertEquals(1, logEvents.size());		
-        LogEvent logEvent = logEvents.get(0);
+		assertEquals(1, logEvents.size());
+		LogEvent logEvent = logEvents.get(0);
 		assertEquals("Unable to process exiting vehicle", logEvent.getMessage());
 	}
 

@@ -16,7 +16,7 @@ public class FareCalculatorServiceTest {
 
 	private static FareCalculatorService fareCalculatorService;
 	private Ticket ticket;
-	
+
 	@BeforeAll
 	public static void setUp() {
 		fareCalculatorService = new FareCalculatorService();
@@ -94,9 +94,9 @@ public class FareCalculatorServiceTest {
 		ticket.setFareRate(Rate.NORMAL_USER);
 
 		// WHEN - THEN
-		assertThrows(NullPointerException.class, () -> fareCalculatorService.calculateFare(ticket));		
+		assertThrows(NullPointerException.class, () -> fareCalculatorService.calculateFare(ticket));
 	}
-	
+
 	@Test
 	void calculateFare_CarWithFutureInTime_Test() {
 
@@ -112,7 +112,7 @@ public class FareCalculatorServiceTest {
 		// WHEN - THEN
 		assertThrows(IllegalArgumentException.class, () -> fareCalculatorService.calculateFare(ticket));
 	}
-	
+
 	@Test
 	void calculateFare_BikeWithFutureInTime_Test() {
 
@@ -164,7 +164,7 @@ public class FareCalculatorServiceTest {
 		fareCalculatorService.calculateFare(ticket);
 
 		// THEN
-		assertEquals(Math.round(0.75 * Fare.CAR_RATE_PER_HOUR*100.0)/100.0, ticket.getPrice());		
+		assertEquals(Math.round(0.75 * Fare.CAR_RATE_PER_HOUR * 100.0) / 100.0, ticket.getPrice());
 	}
 
 	@Test
@@ -238,12 +238,12 @@ public class FareCalculatorServiceTest {
 		fareCalculatorService.calculateFare(ticket);
 
 		// THEN
-		assertEquals(Math.round(Rate.RECURRENT_USER * Fare.CAR_RATE_PER_HOUR*100.0)/100.0, ticket.getPrice());		
+		assertEquals(Math.round(Rate.RECURRENT_USER * Fare.CAR_RATE_PER_HOUR * 100.0) / 100.0, ticket.getPrice());
 	}
 
 	@Test
 	void calculateFare_BikeRecurentUser_Test() {
-		
+
 		// GIVEN
 		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
 		LocalDateTime outTime = LocalDateTime.now();

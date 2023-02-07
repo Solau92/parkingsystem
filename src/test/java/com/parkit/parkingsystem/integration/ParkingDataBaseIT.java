@@ -62,7 +62,7 @@ public class ParkingDataBaseIT {
 	// ***************//
 	// Tests incoming //
 	// ***************//
-	
+
 	@Test
 	void incomingCarIT() throws ClassNotFoundException, SQLException {
 
@@ -120,7 +120,7 @@ public class ParkingDataBaseIT {
 	// ***************//
 	// Tests exiting //
 	// ***************//
-	
+
 	@Test
 	void exitingCarIT() throws Exception {
 
