@@ -1,7 +1,7 @@
 package com.parkit.parkingsystem.integration;
 
-import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
+import com.parkit.parkingsystem.constants.Rate;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
@@ -13,7 +13,6 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -22,16 +21,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 @ExtendWith(MockitoExtension.class)
@@ -88,7 +82,7 @@ public class ParkingDataBaseIT {
 		assertEquals(0.0, ticket.getPrice());
 		assertNotNull(ticket.getInTime());
 		assertNull(ticket.getOutTime());
-		assertEquals(1.0, ticket.getFareRate());
+		assertEquals(Rate.NORMAL_USER, ticket.getFareRate());
 
 		// Checks the attributes of the parkingSpot
 		assertEquals(1, parkingSpot.getId());
@@ -115,7 +109,7 @@ public class ParkingDataBaseIT {
 		assertEquals(0.0, ticket.getPrice());
 		assertNotNull(ticket.getInTime());
 		assertNull(ticket.getOutTime());
-		assertEquals(1.0, ticket.getFareRate());
+		assertEquals(Rate.NORMAL_USER, ticket.getFareRate());
 
 		// Checks the attributes of the parkingSpot
 		assertEquals(4, parkingSpot.getId());
@@ -151,7 +145,7 @@ public class ParkingDataBaseIT {
 		assertEquals(LocalDateTime.of(2022, 02, 01, 11, 00, 00), ticket.getInTime());
 		assertEquals(LocalDateTime.of(2022, 02, 01, 11, 00, 00).plusHours(1), ticket.getOutTime());
 		assertEquals(1.5, ticket.getPrice());
-		assertEquals(1.0, ticket.getFareRate());
+		assertEquals(Rate.NORMAL_USER, ticket.getFareRate());
 
 		// Checks the attributes of the parkingSpot
 		assertEquals(1, parkingSpot.getId());
@@ -183,7 +177,7 @@ public class ParkingDataBaseIT {
 		assertEquals(LocalDateTime.of(2022, 02, 01, 11, 00, 00), ticket.getInTime());
 		assertEquals(LocalDateTime.of(2022, 02, 01, 11, 00, 00).plusHours(1), ticket.getOutTime());
 		assertEquals(1.0, ticket.getPrice());
-		assertEquals(1.0, ticket.getFareRate());
+		assertEquals(Rate.NORMAL_USER, ticket.getFareRate());
 
 		// Checks the attributes of the parkingSpot
 		assertEquals(4, parkingSpot.getId());
@@ -216,7 +210,7 @@ public class ParkingDataBaseIT {
 		assertEquals(LocalDateTime.of(2022, 02, 01, 11, 00, 00), ticket.getInTime());
 		assertEquals(LocalDateTime.of(2022, 02, 01, 11, 00, 00).plusMinutes(15), ticket.getOutTime());
 		assertEquals(0.0, ticket.getPrice());
-		assertEquals(1.0, ticket.getFareRate());
+		assertEquals(Rate.NORMAL_USER, ticket.getFareRate());
 
 		// Checks the attributes of the parkingSpot
 		assertEquals(1, parkingSpot.getId());
@@ -225,7 +219,7 @@ public class ParkingDataBaseIT {
 	}
 
 	@Test
-	void exitingCarMore24hIT() throws Exception {
+	void exiting_CarMore24h_IT() throws Exception {
 
 		when(inputReaderUtil.readSelection()).thenReturn(1);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
@@ -248,7 +242,7 @@ public class ParkingDataBaseIT {
 		assertEquals(LocalDateTime.of(2022, 02, 01, 11, 00, 00), ticket.getInTime());
 		assertEquals(LocalDateTime.of(2022, 02, 01, 11, 00, 00).plusDays(1), ticket.getOutTime());
 		assertEquals(36.0, ticket.getPrice());
-		assertEquals(1.0, ticket.getFareRate());
+		assertEquals(Rate.NORMAL_USER, ticket.getFareRate());
 
 		// Checks the attributes of the parkingSpot
 		assertEquals(1, parkingSpot.getId());
@@ -257,7 +251,7 @@ public class ParkingDataBaseIT {
 	}
 
 	@Test
-	void exitingCarReccurentUserIT() throws Exception {
+	void exiting_CarReccurentUser_IT() throws Exception {
 
 		when(inputReaderUtil.readSelection()).thenReturn(1);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
@@ -282,7 +276,7 @@ public class ParkingDataBaseIT {
 		assertEquals(LocalDateTime.of(2022, 02, 01, 11, 00, 00).plusDays(1), ticket.getInTime());
 		assertEquals(LocalDateTime.of(2022, 02, 01, 11, 00, 00).plusDays(1).plusHours(2), ticket.getOutTime());
 		assertEquals(2.85, ticket.getPrice());
-		assertEquals(0.95, ticket.getFareRate());
+		assertEquals(Rate.RECURRENT_USER, ticket.getFareRate());
 
 		// Checks the attributes of the parkingSpot
 		assertEquals(1, parkingSpot.getId());

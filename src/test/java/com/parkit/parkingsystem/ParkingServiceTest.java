@@ -8,8 +8,10 @@ import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
+import nl.altindag.log.LogCaptor;
+import nl.altindag.log.model.LogEvent;
+
 import org.apache.logging.log4j.Logger;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -19,6 +21,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -43,6 +46,9 @@ public class ParkingServiceTest {
 
 	@Captor
 	ArgumentCaptor<ParkingSpot> parkingSpotCaptor;
+	
+	LogCaptor logCaptor = LogCaptor.forName("ParkingService");
+
 
 	// *****************************//
 	// Tests processIncomingVehicle //
@@ -89,7 +95,7 @@ public class ParkingServiceTest {
 		Ticket ticketSaved = ticketCaptor.getValue();
 		assertEquals("ABCDEF", ticketSaved.getVehicleRegNumber());
 	}
-	
+
 	@Test
 	void processIncomingVehicle_NoSpotAvailable_Test() {
 
@@ -97,15 +103,20 @@ public class ParkingServiceTest {
 		when(inputReaderUtil.readSelection()).thenReturn(2);
 		when(parkingSpotDAO.getNextAvailableSpot(any(ParkingType.class))).thenReturn(-1);
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		parkingService.setLogger(logger);
 
 		// WHEN
 		parkingService.processIncomingVehicle();
 
 		// THEN
-		verify(logger, Mockito.times(2)).error(anyString(), any(Throwable.class));
 		verify(parkingSpotDAO, Mockito.times(0)).updateParking(any(ParkingSpot.class));
 		verify(ticketDAO, times(0)).saveTicket(ticketCaptor.capture());
+		
+		List<LogEvent> logEvents = logCaptor.getLogEvents();
+		assertEquals(2, logEvents.size());		
+        LogEvent logEvent = logEvents.get(0);
+		assertEquals("Error fetching next available parking slot", logEvent.getMessage());
+        logEvent = logEvents.get(1);
+		assertEquals("Unable to process incoming vehicle", logEvent.getMessage());
 	}
 
 	@Test
@@ -117,16 +128,20 @@ public class ParkingServiceTest {
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(false);
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		parkingService.setLogger(logger);
 
 		// WHEN
 		parkingService.processIncomingVehicle();
 
 		// THEN
-		verify(logger, Mockito.times(1)).error(anyString(), any(Throwable.class));
 		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
 		verify(ticketDAO, times(0)).saveTicket(ticketCaptor.capture());
+		
+		List<LogEvent> logEvents = logCaptor.getLogEvents();
+		assertEquals(1, logEvents.size());		
+        LogEvent logEvent = logEvents.get(0);
+		assertEquals("Unable to process incoming vehicle", logEvent.getMessage());
 	}
+
 
 	@Test
 	void processIncomingVehicle_WrongVehicleTypeInput_Test() {
@@ -134,17 +149,24 @@ public class ParkingServiceTest {
 		// GIVEN
 		when(inputReaderUtil.readSelection()).thenReturn(3);
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		parkingService.setLogger(logger);
 
 		// WHEN
 		parkingService.processIncomingVehicle();
 
 		// THEN
-		verify(logger, Mockito.times(2)).error(anyString(), any(Throwable.class));
 		verify(parkingSpotDAO, Mockito.times(0)).updateParking(any(ParkingSpot.class));
 		verify(ticketDAO, times(0)).saveTicket(ticketCaptor.capture());
+		
+		List<LogEvent> logEvents = logCaptor.getLogEvents();
+		assertEquals(2, logEvents.size());		
+        LogEvent logEvent = logEvents.get(0);
+		assertEquals("Error parsing user input for type of vehicle", logEvent.getMessage());
+        logEvent = logEvents.get(1);
+		assertEquals("Unable to process incoming vehicle", logEvent.getMessage());
+		
 	}
-
+	
+	
 	@Test
 	void processIncomingVehicle_CarVehicleAlreadyInParking_Test() throws Exception {
 
@@ -154,16 +176,18 @@ public class ParkingServiceTest {
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		when(ticketDAO.isVehicleAlreadyInParkingInDataBase(anyString())).thenReturn(true);
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		parkingService.setLogger(logger);
 
 		// WHEN
 		parkingService.processIncomingVehicle();
 
 		// THEN
-		verify(logger, Mockito.times(1)).error(anyString(), any(Throwable.class));
 		verify(parkingSpotDAO, Mockito.times(0)).updateParking(any(ParkingSpot.class));
 		verify(ticketDAO, times(0)).saveTicket(ticketCaptor.capture());
 
+		List<LogEvent> logEvents = logCaptor.getLogEvents();
+		assertEquals(1, logEvents.size());		
+        LogEvent logEvent = logEvents.get(0);
+		assertEquals("Unable to process incoming vehicle", logEvent.getMessage());
 	}
 
 	@Test
@@ -171,24 +195,25 @@ public class ParkingServiceTest {
 
 		// GIVEN
 		when(inputReaderUtil.readSelection()).thenReturn(2);
-		when(parkingSpotDAO.getNextAvailableSpot(ParkingType.BIKE)).thenReturn(1);
+		when(parkingSpotDAO.getNextAvailableSpot(ParkingType.BIKE)).thenReturn(4);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-		when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
-		when(ticketDAO.numberOfTimesVehicleInDataBase(anyString())).thenReturn(2);
-		when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
+		when(ticketDAO.isVehicleAlreadyInParkingInDataBase(anyString())).thenReturn(true);
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		parkingService.setLogger(logger);
 
 		// WHEN
 		parkingService.processIncomingVehicle();
 
-		// THEN //
-		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
-		verify(ticketDAO, times(1)).saveTicket(ticketCaptor.capture());
-		Ticket ticketSaved = ticketCaptor.getValue();
-		assertEquals(0.95, ticketSaved.getFareRate());
+		// THEN
+		verify(parkingSpotDAO, Mockito.times(0)).updateParking(any(ParkingSpot.class));
+		verify(ticketDAO, times(0)).saveTicket(ticketCaptor.capture());
+
+		List<LogEvent> logEvents = logCaptor.getLogEvents();
+		assertEquals(1, logEvents.size());		
+        LogEvent logEvent = logEvents.get(0);
+		assertEquals("Unable to process incoming vehicle", logEvent.getMessage());
 	}
 
+	
 	@Test
 	void processIncomingVehicle_BikeVehicleNotAlreadyParkedInParking_Test() throws Exception {
 
@@ -200,7 +225,6 @@ public class ParkingServiceTest {
 		when(ticketDAO.numberOfTimesVehicleInDataBase(anyString())).thenReturn(0);
 		when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		parkingService.setLogger(logger);
 
 		// WHEN
 		parkingService.processIncomingVehicle();
@@ -248,6 +272,7 @@ public class ParkingServiceTest {
 		assertNotNull(ticketUpdated.getOutTime());
 	}
 
+	
 	@Test
 	void processExitingVehicle_TicketNull_Test() throws Exception {
 
@@ -255,17 +280,21 @@ public class ParkingServiceTest {
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		when(ticketDAO.getTicket(anyString())).thenReturn(null);
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		parkingService.setLogger(logger);
 
 		// WHEN
 		parkingService.processExitingVehicle();
 
 		// THEN
-		verify(logger, Mockito.times(1)).error(anyString(), any(Throwable.class));
 		verify(parkingSpotDAO, Mockito.times(0)).updateParking(parkingSpotCaptor.capture());
 		verify(ticketDAO, Mockito.times(0)).updateTicket(ticketCaptor.capture());
+		
+		List<LogEvent> logEvents = logCaptor.getLogEvents();
+		assertEquals(1, logEvents.size());		
+        LogEvent logEvent = logEvents.get(0);
+		assertEquals("Unable to process exiting vehicle", logEvent.getMessage());
 	}
 
+	
 	@Test
 	void processExitingVehicle_BikePbUpdateTicket_Test() throws Exception {
 
@@ -282,15 +311,18 @@ public class ParkingServiceTest {
 		when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
 
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		parkingService.setLogger(logger);
 
 		// WHEN
 		parkingService.processExitingVehicle();
 
 		// THEN
-		verify(logger, Mockito.times(1)).error(anyString(), any(Throwable.class));
 		verify(parkingSpotDAO, Mockito.times(0)).updateParking(parkingSpotCaptor.capture());
 		verify(ticketDAO, Mockito.times(1)).updateTicket(ticketCaptor.capture());
+		
+		List<LogEvent> logEvents = logCaptor.getLogEvents();
+		assertEquals(1, logEvents.size());		
+        LogEvent logEvent = logEvents.get(0);
+		assertEquals("Unable to process exiting vehicle", logEvent.getMessage());
 	}
 
 }

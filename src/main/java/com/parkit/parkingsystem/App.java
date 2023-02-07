@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Contains main method to lauch the app
+ * Contains main method to launch the app
  *
  */
 public class App {

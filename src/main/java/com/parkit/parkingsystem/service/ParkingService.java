@@ -1,6 +1,7 @@
 package com.parkit.parkingsystem.service;
 
 import com.parkit.parkingsystem.constants.ParkingType;
+import com.parkit.parkingsystem.constants.Rate;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.ParkingSpot;
@@ -17,8 +18,7 @@ import java.util.Objects;
  */
 public class ParkingService {
 
-//	private static final Logger logger = LogManager.getLogger("ParkingService");
-	private static Logger logger = LogManager.getLogger("ParkingService");
+	private static final Logger logger = LogManager.getLogger("ParkingService");
 
 	private static FareCalculatorService fareCalculatorService = new FareCalculatorService();
 
@@ -30,13 +30,6 @@ public class ParkingService {
 		this.inputReaderUtil = inputReaderUtil;
 		this.parkingSpotDAO = parkingSpotDAO;
 		this.ticketDAO = ticketDAO;
-	}
-
-	/**
-	 * Sets the logger.
-	 */
-	public void setLogger(Logger logger) {
-		this.logger = logger;
 	}
 
 	/**
@@ -87,10 +80,10 @@ public class ParkingService {
 					if (numberOfTimesVehicleAlreadyParkedInParking(vehicleRegNumber) > 0) {
 						System.out.println(
 								"Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
-						ticket.setFareRate(0.95);
+						ticket.setFareRate(Rate.RECURRENT_USER);
 					} else {
 						// First time for this vehicle in this parking
-						ticket.setFareRate(1.00);
+						ticket.setFareRate(Rate.NORMAL_USER);
 					}
 
 					ticketDAO.saveTicket(ticket);
