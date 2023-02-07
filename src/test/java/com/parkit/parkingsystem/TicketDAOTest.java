@@ -24,6 +24,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -45,6 +46,10 @@ public class TicketDAOTest {
  
 	LogCaptor logCaptor = LogCaptor.forName("TicketDAO");
 
+	// *****************//
+	// Tests saveTicket //
+	// *****************//
+	
 	@Test
 	void saveTicket_CarSucces_Test() throws SQLException, ClassNotFoundException {
 		
@@ -69,7 +74,7 @@ public class TicketDAOTest {
 	}
 
 	@Test
-	void saveTicket_CarOutTimeNull_Test() throws SQLException, ClassNotFoundException {
+	void saveTicket_CarSuccessOutTimeNull_Test() throws SQLException, ClassNotFoundException {
 		
 		//GIVEN
 		Ticket ticketToSave = new Ticket();
@@ -107,15 +112,20 @@ public class TicketDAOTest {
 		when(dataBaseConfig.getConnection()).thenThrow(new SQLException());
 
 		//WHEN
-		ticketDAO.saveTicket(ticketToSave);
+		boolean isTicketSaved = ticketDAO.saveTicket(ticketToSave);
 		
 		//THEN
+		assertFalse(isTicketSaved);
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
 		assertEquals(1, logEvents.size());		
         LogEvent logEvent = logEvents.get(0);
-		assertEquals("Error connection ?", logEvent.getMessage());
+		assertEquals("Error saving ticket", logEvent.getMessage());
 	}
-		
+
+	// *******************//
+	// Tests updateTicket //
+	// *******************//
+	
 	@Test
 	void updateTicket_CarSucces_Test() throws SQLException, ClassNotFoundException {
 		
@@ -162,8 +172,12 @@ public class TicketDAOTest {
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
 		assertEquals(1, logEvents.size());		
         LogEvent logEvent = logEvents.get(0);
-		assertEquals("Error saving ticket info", logEvent.getMessage());
+		assertEquals("Error updating ticket", logEvent.getMessage());
 	}
+	
+	// ****************//
+	// Tests getTicket //
+	// ****************//
 	
 	@Test
 	void getTicket_CarSuccesOutTimeNotNull_Test() throws SQLException, ClassNotFoundException {
@@ -221,14 +235,19 @@ public class TicketDAOTest {
 		when(resultSet.next()).thenReturn(false);
 		
 		//WHEN
-		ticketDAO.getTicket("WXYZ");
+		Ticket ticketGetTicket = ticketDAO.getTicket("WXYZ");
 				
 		//THEN
+		assertNull(ticketGetTicket);
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
 		assertEquals(1, logEvents.size());
         LogEvent logEvent = logEvents.get(0);
 		assertEquals("Error fetching the ticket", logEvent.getMessage());
 	}
+
+	// ***********************************//
+	// Tests getTicketVehicleNotInParking //
+	// ***********************************//
 	
 	@Test
 	void getTicketVehicleNotInParking_CarSuccesOutTimeNotNull_Test() throws SQLException, ClassNotFoundException {
@@ -263,15 +282,20 @@ public class TicketDAOTest {
 		when(resultSet.next()).thenReturn(false);
 		
 		//WHEN
-		ticketDAO.getTicketVehicleNotInParking("WXYZ");
+		Ticket ticketGetTicket = ticketDAO.getTicketVehicleNotInParking("WXYZ");
 				
 		//THEN
+		assertNull(ticketGetTicket);
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
 		assertEquals(1, logEvents.size());		
         LogEvent logEvent = logEvents.get(0);
 		assertEquals("Error fetching the ticket", logEvent.getMessage());
 	}	
 
+	// ******************************************//
+	// Tests isVehicleAlreadyInParkingInDataBase //
+	// ******************************************//
+	
 	@Test
 	void isVehicleAlreadyInParkingInDataBase_No_Test() throws ClassNotFoundException, SQLException {
 
@@ -346,14 +370,19 @@ public class TicketDAOTest {
 		when(dataBaseConfig.getConnection()).thenReturn(null);
 		
 		//WHEN
-		ticketDAO.isVehicleAlreadyInParkingInDataBase(null);
+		boolean isVehicleAlreadyInParking = ticketDAO.isVehicleAlreadyInParkingInDataBase(null);
 		
 		//THEN
+		assertTrue(isVehicleAlreadyInParking);
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
 		assertEquals(1, logEvents.size());		
         LogEvent logEvent = logEvents.get(0);
-		assertEquals("Error connection", logEvent.getMessage());	
+		assertEquals("Error checking vehicle in already in parking", logEvent.getMessage());	
 	}
+	
+	// *************************************//
+	// Tests numberOfTimesVehicleInDataBase //
+	// *************************************//
 	
 	@Test
 	void numberOfTimesVehicleInDataBase_OneOrMore_Test() throws ClassNotFoundException, SQLException {
@@ -397,12 +426,13 @@ public class TicketDAOTest {
 		when(preparedStatement.executeQuery()).thenThrow(new SQLException());
 		
 		//WHEN
-		ticketDAO.numberOfTimesVehicleInDataBase("WXYZ");
+		int numberOfTimes = ticketDAO.numberOfTimesVehicleInDataBase("WXYZ");
 		
 		//THEN
+		assertEquals(0, numberOfTimes);
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
 		assertEquals(1, logEvents.size());		
         LogEvent logEvent = logEvents.get(0);
-		assertEquals("Error", logEvent.getMessage());
+		assertEquals("Error extracting number of times vehicule in database", logEvent.getMessage());
 	}
 }

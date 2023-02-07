@@ -1,4 +1,5 @@
 package com.parkit.parkingsystem.constants;
+
 /**
  * Contains the rates for different vehicles (bike and car)
  *

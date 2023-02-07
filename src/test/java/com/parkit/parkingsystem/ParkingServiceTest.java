@@ -9,6 +9,7 @@ import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -52,7 +53,7 @@ public class ParkingServiceTest {
 
 		// GIVEN
 		when(inputReaderUtil.readSelection()).thenReturn(1);
-		when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
+		when(parkingSpotDAO.getNextAvailableSpot(ParkingType.CAR)).thenReturn(1);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 		when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true); // *******************
@@ -73,7 +74,7 @@ public class ParkingServiceTest {
 
 		// GIVEN
 		when(inputReaderUtil.readSelection()).thenReturn(2);
-		when(parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE)).thenReturn(4);
+		when(parkingSpotDAO.getNextAvailableSpot(ParkingType.BIKE)).thenReturn(4);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 		when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true); // *******************
@@ -89,13 +90,12 @@ public class ParkingServiceTest {
 		assertEquals("ABCDEF", ticketSaved.getVehicleRegNumber());
 	}
 	
-
 	@Test
 	void processIncomingVehicle_NoSpotAvailable_Test() {
 
 		// GIVEN
 		when(inputReaderUtil.readSelection()).thenReturn(2);
-		when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(-1);
+		when(parkingSpotDAO.getNextAvailableSpot(any(ParkingType.class))).thenReturn(-1);
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.setLogger(logger);
 
@@ -113,7 +113,7 @@ public class ParkingServiceTest {
 
 		// GIVEN
 		when(inputReaderUtil.readSelection()).thenReturn(1);
-		when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
+		when(parkingSpotDAO.getNextAvailableSpot(ParkingType.CAR)).thenReturn(1);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(false);
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
@@ -150,7 +150,7 @@ public class ParkingServiceTest {
 
 		// GIVEN
 		when(inputReaderUtil.readSelection()).thenReturn(1);
-		when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(4);
+		when(parkingSpotDAO.getNextAvailableSpot(ParkingType.CAR)).thenReturn(4);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		when(ticketDAO.isVehicleAlreadyInParkingInDataBase(anyString())).thenReturn(true);
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
@@ -171,11 +171,11 @@ public class ParkingServiceTest {
 
 		// GIVEN
 		when(inputReaderUtil.readSelection()).thenReturn(2);
-		when(parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE)).thenReturn(1);
+		when(parkingSpotDAO.getNextAvailableSpot(ParkingType.BIKE)).thenReturn(1);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 		when(ticketDAO.numberOfTimesVehicleInDataBase(anyString())).thenReturn(2);
-		when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true); // *******************
+		when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.setLogger(logger);
 
@@ -194,7 +194,7 @@ public class ParkingServiceTest {
 
 		// GIVEN
 		when(inputReaderUtil.readSelection()).thenReturn(1);
-		when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
+		when(parkingSpotDAO.getNextAvailableSpot(ParkingType.CAR)).thenReturn(1);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 		when(ticketDAO.numberOfTimesVehicleInDataBase(anyString())).thenReturn(0);
@@ -215,7 +215,7 @@ public class ParkingServiceTest {
 	// ****************************//
 	// Tests processExitingVehicle //
 	// ****************************//
-	
+
 	@Test
 	void processExitingVehicle_CarOk_Test() throws Exception {
 

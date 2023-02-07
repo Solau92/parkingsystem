@@ -43,6 +43,10 @@ public class ParkingSpotDAOTest {
 
 	LogCaptor logCaptor = LogCaptor.forName("ParkingSpotDAO");
 
+	// *********************//
+	// Tests getParkingSpot //
+	// *********************//
+	
 	@Test
 	void getParkingSpot_CarSucces_Test() throws ClassNotFoundException, SQLException {
 
@@ -81,7 +85,6 @@ public class ParkingSpotDAOTest {
 		assertEquals(0, parkingSpotGet.getId());
 		assertNull(parkingSpotGet.getParkingType());
 		assertFalse(parkingSpotGet.isAvailable());
-
 	}
 
 	@Test
@@ -104,8 +107,12 @@ public class ParkingSpotDAOTest {
 
 	}
 
+	// ***************************//
+	// Tests getNextAvailableSlot //
+	// ***************************//
+	
 	@Test
-	void getNextAvailableSlot_CarSucces_Test() throws ClassNotFoundException, SQLException {
+	void getNextAvailableSpot_CarSucces_Test() throws ClassNotFoundException, SQLException {
 
 		// GIVEN
 		when(dataBaseConfig.getConnection()).thenReturn(connection);
@@ -116,14 +123,14 @@ public class ParkingSpotDAOTest {
 		when(resultSet.getInt(anyInt())).thenReturn(1);
 
 		// WHEN
-		int spotNumber = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
+		int spotNumber = parkingSpotDAO.getNextAvailableSpot(ParkingType.CAR);
 
 		// THEN
 		assertEquals(1, spotNumber);
 	}
 
 	@Test
-	void getNextAvailableSlot_BikeSucces_Test() throws ClassNotFoundException, SQLException {
+	void getNextAvailableSpot_BikeSucces_Test() throws ClassNotFoundException, SQLException {
 
 		// GIVEN
 		when(dataBaseConfig.getConnection()).thenReturn(connection);
@@ -133,14 +140,14 @@ public class ParkingSpotDAOTest {
 		when(resultSet.getInt(anyInt())).thenReturn(4);
 
 		// WHEN
-		int spotNumber = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
+		int spotNumber = parkingSpotDAO.getNextAvailableSpot(ParkingType.CAR);
 
 		// THEN
 		assertEquals(4, spotNumber);
 	}
 
 	@Test
-	void getNextAvailableSlot_CarNoAvailable_Test() throws ClassNotFoundException, SQLException {
+	void getNextAvailableSpot_CarNoAvailable_Test() throws ClassNotFoundException, SQLException {
 
 		// GIVEN
 		when(dataBaseConfig.getConnection()).thenReturn(connection);
@@ -149,18 +156,18 @@ public class ParkingSpotDAOTest {
 		when(resultSet.next()).thenThrow(new SQLException());
 
 		// WHEN
-		int spotNumber = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
+		int spotNumber = parkingSpotDAO.getNextAvailableSpot(ParkingType.CAR);
 
 		// THEN
 		assertEquals(-1, spotNumber);
 		List<LogEvent> logEvents = logCaptor.getLogEvents();
 		assertEquals(1, logEvents.size());
 		LogEvent logEvent = logEvents.get(0);
-		assertEquals("Error fetching next available slot", logEvent.getMessage());
+		assertEquals("Error fetching next available spot", logEvent.getMessage());
 	}
 
 	@Test
-	void getNextAvailableSlot_CarNoResult_Test() throws ClassNotFoundException, SQLException {
+	void getNextAvailableSpot_CarNoResult_Test() throws ClassNotFoundException, SQLException {
 
 		// GIVEN
 		when(dataBaseConfig.getConnection()).thenReturn(connection);
@@ -169,12 +176,16 @@ public class ParkingSpotDAOTest {
 		when(resultSet.next()).thenReturn(false);
 
 		// WHEN
-		int spotNumber = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
+		int spotNumber = parkingSpotDAO.getNextAvailableSpot(ParkingType.CAR);
 
 		// THEN
 		assertEquals(-1, spotNumber);
 	}
 
+	// *********************//
+	// Tests updDateParking //
+	// *********************//
+	
 	@Test
 	void upDateParking_BikeSucces_Test() throws ClassNotFoundException, SQLException {
 

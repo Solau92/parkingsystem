@@ -16,6 +16,9 @@ import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
+/**
+ * Contains methods to interact with database (ticket table)
+ */
 public class TicketDAO {
 
 	private static final Logger logger = LogManager.getLogger("TicketDAO");
@@ -26,9 +29,9 @@ public class TicketDAO {
 	 * Save in database a ticket given in parameter.
 	 * @param ticket
 	 * @return true if the SQL statement execution was ok (means that the
-	 * first result is a ResultSet object)
-	 * @return false otherwise (if the first result of the SQL query is an
-	 * update count or there is no result) or there was an error fetching
+	 * first result is a ResultSet object) and false otherwise 
+	 * (if the first result of the SQL query is an update count 
+	 * or there is no result) or there was an error fetching
 	 * the next available slot
 	 */
 	public boolean saveTicket(Ticket ticket) {
@@ -46,7 +49,7 @@ public class TicketDAO {
 			ps.setDouble(6, ticket.getFareRate());
 			return ps.execute();
 		} catch (Exception ex) {
-			logger.error("Error connection ?", ex);
+			logger.error("Error saving ticket", ex);
 		} 
 		finally {
 			dataBaseConfig.closePreparedStatement(ps);
@@ -56,11 +59,12 @@ public class TicketDAO {
 	}
 
 	/**
-	 * Creates a ticket object from date base with the informations found
-	 * in the base with the vehicleRegNumber given.
+	 * Creates a ticket object from database with the informations found
+	 * in the base with the vehicleRegNumber given for vehicles parked in
+	 * the parking (out_time null).
 	 * @param vehicleRegNumber
-	 * @return a ticket
-	 * @return null if no result found in database
+	 * @return a ticket or null if no result found in database
+	 * @throws Exception 
 	 */
 	public Ticket getTicket(String vehicleRegNumber) {
 		Connection con = null;
@@ -96,10 +100,11 @@ public class TicketDAO {
 
 	/**
 	 * Creates a ticket object from date base with the informations found in the
-	 * base with the vehicleRegNumber given.
+	 * base with the vehicleRegNumber given for vehicles already out of 
+	 * the parking (out_time not null).
 	 * @param vehicleRegNumber
-	 * @return a ticket
-	 * @return null if no result found in database
+	 * @return a ticket or null if no result found in database
+	 * @throws Exception
 	 */
 	public Ticket getTicketVehicleNotInParking(String vehicleRegNumber) {
 		Connection con = null;
@@ -134,11 +139,10 @@ public class TicketDAO {
 	}
 	
 	/**
-	 * Updates in database the information of a given ticket in database a ticket
+	 * Updates in database the information of a given ticket 
 	 * given in parameter.
 	 * @param ticket
-	 * @return true if the SQL statement execution was ok
-	 * @return false if error saving ticket info 
+	 * @return true if the SQL statement execution was ok, false if error saving ticket info 
 	 */
 	public boolean updateTicket(Ticket ticket) {
 		Connection con = null;
@@ -152,7 +156,7 @@ public class TicketDAO {
 			ps.execute();
 			return true;
 		} catch (Exception ex) {
-			logger.error("Error saving ticket info", ex);
+			logger.error("Error updating ticket", ex);
 		} finally {
 			dataBaseConfig.closePreparedStatement(ps);
 			dataBaseConfig.closeConnection(con);
@@ -163,9 +167,9 @@ public class TicketDAO {
 	/**
 	 * Searches in data base if a vehicle is already in parking, given is regNumber.
 	 * @param vehicleRegNumber
-	 * @return true if the vehicle is in parking (which means that a went in but not
-	 *         already out)
-	 * @return false if the vehicle has never been in the parking, or if it went out
+	 * @return true if the vehicle is in parking (which means that it went in but not
+	 *         already out) or false if the vehicle has never been in the parking, 
+	 *         or if it went out
 	 */
 	public boolean isVehicleAlreadyInParkingInDataBase(String vehicleRegNumber) {
 
@@ -184,7 +188,7 @@ public class TicketDAO {
 			}
 
 		} catch (Exception ex) {
-			logger.error("Error connection", ex);
+			logger.error("Error checking vehicle in already in parking", ex);
 		} finally {
 			dataBaseConfig.closeResultSet(rs);
 			dataBaseConfig.closePreparedStatement(ps);
@@ -195,7 +199,7 @@ public class TicketDAO {
 
 	/**
 	 * Searches in data base how many times the vehicle has already parked
-	 * in parking, given is regNumber
+	 * in parking, given is regNumber.
 	 * @param vehicleRegNumber
 	 * @return the number of times (0 if never)
 	 */
@@ -215,7 +219,7 @@ public class TicketDAO {
 			dataBaseConfig.closeResultSet(rs);
 			dataBaseConfig.closePreparedStatement(ps);
 		} catch (Exception ex) {
-			logger.error("Error", ex);
+			logger.error("Error extracting number of times vehicule in database", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
 		}

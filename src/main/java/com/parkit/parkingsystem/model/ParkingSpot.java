@@ -2,39 +2,43 @@ package com.parkit.parkingsystem.model;
 
 import com.parkit.parkingsystem.constants.ParkingType;
 
+/**
+ * Description of ParkingSpot object
+ */
 public class ParkingSpot {
-    private int number;
-    private ParkingType parkingType;
-    private boolean isAvailable;
 
-    public ParkingSpot(int number, ParkingType parkingType, boolean isAvailable) {
-        this.number = number;
-        this.parkingType = parkingType;
-        this.isAvailable = isAvailable;
-    }
+	private int number;
+	private ParkingType parkingType;
+	private boolean isAvailable;
 
-    public int getId() {
-        return number;
-    }
+	public ParkingSpot(int number, ParkingType parkingType, boolean isAvailable) {
+		this.number = number;
+		this.parkingType = parkingType;
+		this.isAvailable = isAvailable;
+	}
 
-    public void setId(int number) {
-        this.number = number;
-    }
+	public int getId() {
+		return number;
+	}
 
-    public ParkingType getParkingType() {
-        return parkingType;
-    }
+	public void setId(int number) {
+		this.number = number;
+	}
 
-    public void setParkingType(ParkingType parkingType) {
-        this.parkingType = parkingType;
-    }
+	public ParkingType getParkingType() {
+		return parkingType;
+	}
 
-    public boolean isAvailable() {
-        return isAvailable;
-    }
+	public void setParkingType(ParkingType parkingType) {
+		this.parkingType = parkingType;
+	}
 
-    public void setAvailable(boolean available) {
-        isAvailable = available;
-    }
+	public boolean isAvailable() {
+		return isAvailable;
+	}
+
+	public void setAvailable(boolean available) {
+		isAvailable = available;
+	}
 
 }

@@ -12,6 +12,9 @@ import org.apache.logging.log4j.Logger;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * Contains methods to proceed to incoming and exiting vehicles
+ */
 public class ParkingService {
 
 //	private static final Logger logger = LogManager.getLogger("ParkingService");
@@ -37,16 +40,18 @@ public class ParkingService {
 	}
 
 	/**
-	 * Calls method processIncomingVehicle(LocalDateTime) with parameter LocalDateTime = null
+	 * Calls method processIncomingVehicle(LocalDateTime) with parameter
+	 * LocalDateTime = null
 	 */
 	public void processIncomingVehicle() {
 		processIncomingVehicle(null);
 	}
 
 	/**
-	 * If a parking spot is available and the vehicle is not already
-	 * in parking, updates the status of the parking spot chosen in data base, and
-	 * creates and saves the ticket in date base.
+	 * If a parking spot is available and the vehicle is not already in parking,
+	 * updates the status of the parking spot chosen in data base, and creates and
+	 * saves the ticket in date base.
+	 * 
 	 * @param LocalDateTime inTime
 	 * @throws Exception if vehicle already in parking, no spot available, and if
 	 *                   problem updating parking spot in database
@@ -55,6 +60,7 @@ public class ParkingService {
 		try {
 			ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
 
+			// If a parkingSpot is available
 			if (parkingSpot != null && parkingSpot.getId() > 0) {
 				String vehicleRegNumber = getVehicleRegNumber();
 
@@ -97,6 +103,7 @@ public class ParkingService {
 					throw new Exception("Unable to process incoming vehicle : vehicle already in parking");
 				}
 			} else {
+				// No parkingSpot available
 				throw new Exception("No slot available");
 			}
 		} catch (Exception e) {
@@ -106,6 +113,7 @@ public class ParkingService {
 
 	/**
 	 * Returns the vehicle regNumber.
+	 * 
 	 * @return the vehicle regNumer written by the user
 	 * @throws Exception
 	 */
@@ -116,6 +124,7 @@ public class ParkingService {
 
 	/**
 	 * Returns true or false whether the vehicle is or not in the parking
+	 * 
 	 * @param vehicleRegNumber
 	 * @return true if the vehicle is already in parking, false if it is not (never
 	 *         been there, or already out)
@@ -126,6 +135,7 @@ public class ParkingService {
 
 	/**
 	 * Returns the number of times the vehicle parked in parking before
+	 * 
 	 * @param vehicleRegNumber
 	 * @return the number of times the vehicle parked in parking (0 if never)
 	 */
@@ -135,8 +145,9 @@ public class ParkingService {
 
 	/**
 	 * Returns the parking spot chosen if one is available.
+	 * 
 	 * @return a parking spot
-	 * @throws Exception if no parking spot is available
+	 * @throws Exception                if no parking spot is available
 	 * @throws IllegalArgumentException if problem of input
 	 */
 	private ParkingSpot getNextParkingNumberIfAvailable() {
@@ -144,7 +155,7 @@ public class ParkingService {
 		ParkingSpot parkingSpot = null;
 		try {
 			ParkingType parkingType = getVehicleType();
-			parkingNumber = parkingSpotDAO.getNextAvailableSlot(parkingType);
+			parkingNumber = parkingSpotDAO.getNextAvailableSpot(parkingType);
 			if (parkingNumber > 0) {
 				parkingSpot = new ParkingSpot(parkingNumber, parkingType, true);
 			} else {
@@ -160,6 +171,7 @@ public class ParkingService {
 
 	/**
 	 * Returns the parking type.
+	 * 
 	 * @return the parking type
 	 * @throws IllegalArgumentException if the input is incorrect
 	 */
@@ -183,19 +195,21 @@ public class ParkingService {
 	}
 
 	/**
-	 * Calls method processExitingVehicle(LocalDateTime) with parameter LocalDateTime = null
+	 * Calls method processExitingVehicle(LocalDateTime) with parameter
+	 * LocalDateTime = null
 	 */
 	public void processExitingVehicle() {
 		processExitingVehicle(null);
 	}
 
 	/**
-	 * Gets the ticket in data base and updates it (adding out time),
-	 * calculates the fare and updates the ticket (adding fare), and
-	 * updates the parking spot in data base (available).
+	 * Gets the ticket in data base and updates it (adding out time), calculates the
+	 * fare and updates the ticket (adding fare), and updates the parking spot in
+	 * data base (available).
+	 * 
 	 * @param outTime
-	 * @throws Exception if error (in particular when vehicle not in the
-	 * parking or error while searching ticket in database)
+	 * @throws Exception if error (in particular when vehicle not in the parking or
+	 *                   error while searching ticket in database)
 	 */
 	public void processExitingVehicle(LocalDateTime outTime) {
 		try {

@@ -9,8 +9,10 @@ public class FareCalculatorService {
 
 	/**
 	 * Calculates the fare of a given ticket and set the price of this ticket.
+	 * 
 	 * @param ticket
-	 * @throws IllegalArgumentException if ticket out time null or ticket out time is before ticket in time
+	 * @throws IllegalArgumentException if ticket out time null or ticket out time
+	 *                                  is before ticket in time
 	 * @throws IllegalArgumentException if the type of parking is unknown
 	 */
 	public void calculateFare(Ticket ticket) {
@@ -19,6 +21,7 @@ public class FareCalculatorService {
 			throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
 		}
 
+		// duration is expressed as hours
 		double duration = Duration.between(ticket.getInTime(), ticket.getOutTime()).toMinutes() / 60.0;
 
 		if (duration <= 0.5) {

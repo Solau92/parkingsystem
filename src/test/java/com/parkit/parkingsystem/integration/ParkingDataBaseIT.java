@@ -65,6 +65,10 @@ public class ParkingDataBaseIT {
 		dataBasePrepareService.clearDataBaseEntries();
 	}
 
+	// ***************//
+	// Tests incoming //
+	// ***************//
+	
 	@Test
 	void incomingCarIT() throws ClassNotFoundException, SQLException {
 
@@ -119,6 +123,10 @@ public class ParkingDataBaseIT {
 		assertEquals(ParkingType.BIKE, parkingSpot.getParkingType());
 	}
 
+	// ***************//
+	// Tests exiting //
+	// ***************//
+	
 	@Test
 	void exitingCarIT() throws Exception {
 

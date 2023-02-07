@@ -12,6 +12,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Contains methods to interact with database (parkingSpot table)
+ *
+ */
 public class ParkingSpotDAO {
 	
 	private static final Logger logger = LogManager.getLogger("ParkingSpotDAO");
@@ -48,14 +52,13 @@ public class ParkingSpotDAO {
 	}
 
 	/**
-	 * Returns the number of an available slot, or -1 if no slot available.
+	 * Returns the number of an available spot, or -1 if no spot available.
 	 * @param parkingType
-	 * @return -1 if no slot available
-	 * @return the parking number chosen (minimum number)
+	 * @return the parking number chosen (minimum number), or -1 if no spot available
 	 * @throws SQLException 
 	 * @throws ClassNotFoundException 
 	 */
-	public int getNextAvailableSlot(ParkingType parkingType) {
+	public int getNextAvailableSpot(ParkingType parkingType) {
 		Connection con = null;
 		int result = -1;
 		try {
@@ -69,7 +72,7 @@ public class ParkingSpotDAO {
 			dataBaseConfig.closeResultSet(rs);
 			dataBaseConfig.closePreparedStatement(ps);
 		} catch (Exception ex) {
-			logger.error("Error fetching next available slot", ex);
+			logger.error("Error fetching next available spot", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
 		}

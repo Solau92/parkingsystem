@@ -1,3 +1,7 @@
+# !!
+I changed the database structure and add a attribute (named "Fare_Rate") corresponding to 
+the percentage paid (1 for a new user, and 0.95 for a recurrent user).
+
 # Parking System
 A command line app for managing the parking system. 
 This app uses Java to run and stores the data in Mysql DB.
